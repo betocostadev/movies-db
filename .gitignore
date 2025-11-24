@@ -1,0 +1,24 @@
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+
+# Go binaries and build artifacts
+*.exe
+*.exe~
+*.dll
+*.so
+*.dylib
+/main
+/tmp/main
+*.test
+*.out
+
+# Environment and configuration files
+.env
+.env.local
+.env.development
+.env.test
+.env.production
+*.pem
+*.key
