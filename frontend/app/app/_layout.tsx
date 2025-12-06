@@ -12,6 +12,22 @@ import 'react-native-reanimated'
 
 import { useColorScheme } from '@/components/useColorScheme'
 
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
+
+const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      staleTime: 30 * 10000,
+      gcTime: 2 * 60 * 1000,
+      refetchOnReconnect: true,
+      retry: 1,
+    },
+    mutations: {
+      retry: false,
+    },
+  },
+})
+
 export {
   // Catch any errors thrown by the Layout component.
   ErrorBoundary,
@@ -53,11 +69,13 @@ function RootLayoutNav() {
   const colorScheme = useColorScheme()
 
   return (
-    <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
-      <Stack>
-        <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-        <Stack.Screen name="modal" options={{ presentation: 'modal' }} />
-      </Stack>
-    </ThemeProvider>
+    <QueryClientProvider client={queryClient}>
+      <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
+        <Stack>
+          <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+          <Stack.Screen name="modal" options={{ presentation: 'modal' }} />
+        </Stack>
+      </ThemeProvider>
+    </QueryClientProvider>
   )
 }

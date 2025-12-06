@@ -2,8 +2,14 @@ import { StyleSheet } from 'react-native'
 
 import EditScreenInfo from '@/components/EditScreenInfo'
 import { Text, View } from '@/components/Themed'
+import { useMovies } from '@/hooks/useMovies'
 
 export default function MoviesScreen() {
+  const { movies, isLoading, error } = useMovies()
+  console.log(error)
+  console.log(isLoading)
+  console.log(movies)
+
   return (
     <View style={styles.container}>
       <Text style={styles.title}>Movies</Text>
