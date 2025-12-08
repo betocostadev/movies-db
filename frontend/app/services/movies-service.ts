@@ -1,21 +1,31 @@
-import { API_URL } from '@/constants/General'
+import { IMovie } from '@/types/movies'
+import { BaseService } from './base-service'
 
-const MOVIES_URL = `${API_URL}/movies/`
+export class MoviesService extends BaseService {
+  private MOVIES_URL: string
 
-export const getRandomMovies = async () => {
-  const url = `${MOVIES_URL}/random`
-  const response = await fetch(url)
-  if (!response.ok) {
-    throw new Error('Failed to fetch random movies')
+  constructor() {
+    super()
+    this.MOVIES_URL = `${this.apiURL}/movies/`
   }
-  return response.json()
+
+  async getRandomMovies(): Promise<IMovie> {
+    const url = `${this.MOVIES_URL}/random`
+    const response = await fetch(url)
+    if (!response.ok) {
+      throw new Error('Failed to fetch random movies')
+    }
+    return response.json()
+  }
+
+  async getTopMovies() {
+    const url = `${this.MOVIES_URL}/top`
+    const response = await fetch(url)
+    if (!response.ok) {
+      throw new Error('Failed to fetch top movies')
+    }
+    return response.json()
+  }
 }
 
-export const getTopMovies = async () => {
-  const url = `${MOVIES_URL}/top`
-  const response = await fetch(url)
-  if (!response.ok) {
-    throw new Error('Failed to fetch top movies')
-  }
-  return response.json()
-}
+export const moviesServiceInstance = new MoviesService()

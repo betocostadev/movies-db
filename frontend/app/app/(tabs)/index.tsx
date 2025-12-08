@@ -2,10 +2,10 @@ import { StyleSheet } from 'react-native'
 
 import EditScreenInfo from '@/components/EditScreenInfo'
 import { Text, View } from '@/components/Themed'
-import { useMovies } from '@/hooks/useMovies'
+import { useRandomMovies } from '@/hooks/useMovies'
 
 export default function MoviesScreen() {
-  const { movies, isLoading, error } = useMovies()
+  const { movies, isLoading, error } = useRandomMovies()
   console.log(error)
   console.log(isLoading)
   console.log(movies)
