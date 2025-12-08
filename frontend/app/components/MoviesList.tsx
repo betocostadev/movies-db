@@ -1,26 +1,30 @@
-import { IMovie } from '@/types/movies'
+import { IMovie, TMovieListKey } from '@/types/movies'
 import { Text, View } from './Themed'
 import { FlatList, StyleSheet } from 'react-native'
 import { MovieCard } from './MovieCard'
 import { MovieCardLoading } from './MovieCardLoading'
 
 export function MoviesList({
+  movieListKey,
   movies,
   isLoading,
   error,
   headerTitle,
 }: {
+  movieListKey: TMovieListKey
   movies: IMovie[] | undefined
   isLoading: boolean
   error: Error | undefined
   headerTitle?: string
 }) {
-  console.log('Movies component props:')
-  console.log(movies)
-  console.log(isLoading)
-  console.log(error)
-
   const skeletonCount = 6
+
+  if (error) {
+    return <Text>Error: {error.message}</Text>
+  }
+
+  // TODO: Add routing to movie page
+  // Extract id from movie-list-key-movieId
 
   return (
     <View style={styles.container}>
@@ -29,13 +33,15 @@ export function MoviesList({
         data={isLoading ? Array.from({ length: skeletonCount }) : movies}
         renderItem={({ item, index }) =>
           isLoading ? (
-            <MovieCardLoading key={`randMovie-${index}`} />
+            <MovieCardLoading key={`${movieListKey}-${index}`} />
           ) : (
             <MovieCard movie={item as IMovie} />
           )
         }
         keyExtractor={(item, index) =>
-          isLoading ? `rand-skeleton-${index}` : String((item as IMovie).id)
+          isLoading
+            ? `skeleton-${index}`
+            : `${movieListKey}-${String((item as IMovie).id)}`
         }
         horizontal
         showsHorizontalScrollIndicator={false}

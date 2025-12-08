@@ -14,3 +14,5 @@ export interface IMovie {
   genres: null | string[]
   keywords: null | string[]
 }
+
+export type TMovieListKey = 'random-movies' | 'top-movies'

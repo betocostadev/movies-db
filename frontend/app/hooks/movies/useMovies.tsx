@@ -1,7 +1,7 @@
 import { useMemo, useCallback } from 'react'
 import { useQuery } from '@tanstack/react-query'
 import { moviesQueryKeys } from './useMoviesQueryKeys'
-import { getRandomMoviesQueryFn } from './useMoviesQueries'
+import { getRandomMoviesQueryFn, getTopMoviesQueryFn } from './useMoviesQueries'
 import { IMovie } from '@/types/movies'
 import { useMoviesService } from './useMovieService'
 
@@ -59,6 +59,45 @@ export const useRandomMovies = (
   return {
     movies: data,
     isLoading: isLoading,
+    error: movieError,
+    refresh,
+  }
+}
+
+export const useTopMovies = (
+  options: UseMoviesOptions = {},
+): UseMoviesResult => {
+  const { autoload, refetchInterval } = options
+  const moviesService = useMemo(() => useMoviesService(), [])
+
+  const queryKey = useMemo(() => moviesQueryKeys.topMovies(), [])
+
+  const { data, isLoading, error, refetch } = useQuery({
+    queryKey: queryKey,
+    queryFn: () => {
+      if (!moviesService) {
+        throw new Error('Movies service not available')
+      }
+      return getTopMoviesQueryFn(moviesService)
+    },
+    enabled: autoload && !!moviesService,
+    refetchInterval: refetchInterval,
+    refetchOnReconnect: true,
+    placeholderData: (previousData) => previousData,
+  })
+
+  const refresh = useCallback(async () => {
+    refetch()
+  }, [refetch])
+
+  const movieError = useMemo<Error | undefined>(() => {
+    if (!error) return undefined
+    return new Error('Failed to load top movies')
+  }, [error])
+
+  return {
+    movies: data,
+    isLoading,
     error: movieError,
     refresh,
   }
