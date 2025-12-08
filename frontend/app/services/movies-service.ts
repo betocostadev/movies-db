@@ -9,7 +9,7 @@ export class MoviesService extends BaseService {
     this.MOVIES_URL = `${this.apiURL}/movies/`
   }
 
-  async getRandomMovies(): Promise<IMovie> {
+  async getRandomMovies(): Promise<IMovie[]> {
     const url = `${this.MOVIES_URL}/random`
     const response = await fetch(url)
     if (!response.ok) {
@@ -18,7 +18,7 @@ export class MoviesService extends BaseService {
     return response.json()
   }
 
-  async getTopMovies() {
+  async getTopMovies(): Promise<IMovie[]> {
     const url = `${this.MOVIES_URL}/top`
     const response = await fetch(url)
     if (!response.ok) {

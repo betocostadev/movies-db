@@ -2,7 +2,8 @@ import { StyleSheet } from 'react-native'
 
 import EditScreenInfo from '@/components/EditScreenInfo'
 import { Text, View } from '@/components/Themed'
-import { useRandomMovies } from '@/hooks/useMovies'
+import { useRandomMovies } from '@/hooks/movies/useMovies'
+import { MoviesList } from '@/components/MoviesList'
 
 export default function MoviesScreen() {
   const { movies, isLoading, error } = useRandomMovies()
@@ -12,7 +13,7 @@ export default function MoviesScreen() {
 
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Movies</Text>
+      <MoviesList movies={movies} isLoading={isLoading} error={error} />
       <View
         style={styles.separator}
         lightColor="#eee"

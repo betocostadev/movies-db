@@ -19,13 +19,15 @@ export interface UseMoviesOptions {
 }
 
 export interface UseMoviesResult {
-  movies: IMovie[]
+  movies: IMovie[] | undefined
   isLoading: boolean
   error: Error | undefined
   refresh: () => Promise<void>
 }
 
-export const useRandomMovies = (options: UseMoviesOptions = {}) => {
+export const useRandomMovies = (
+  options: UseMoviesOptions = {},
+): UseMoviesResult => {
   const { autoload, refetchInterval } = options
   const moviesService = useMemo(() => useMoviesService(), [])
 
