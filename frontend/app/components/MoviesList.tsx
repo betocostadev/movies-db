@@ -58,7 +58,6 @@ const styles = StyleSheet.create({
   listHeader: {
     fontSize: 24,
     fontWeight: 'bold',
-    color: '#222',
     marginVertical: 12,
     marginLeft: 8,
   },

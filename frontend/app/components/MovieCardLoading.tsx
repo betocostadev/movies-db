@@ -20,7 +20,6 @@ const styles = StyleSheet.create({
     marginVertical: 8,
     marginHorizontal: CARD_MARGIN,
     borderRadius: 8,
-    backgroundColor: '#eee',
     overflow: 'hidden',
     alignItems: 'center',
   },
@@ -36,7 +35,6 @@ const styles = StyleSheet.create({
     height: 20,
     marginTop: 12,
     marginBottom: 10,
-    backgroundColor: '#ddd',
     borderRadius: 4,
   },
 })

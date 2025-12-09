@@ -26,7 +26,6 @@ const styles = StyleSheet.create({
     marginVertical: 8,
     marginHorizontal: CARD_MARGIN,
     borderRadius: 8,
-    backgroundColor: '#fff',
     overflow: 'hidden',
     alignItems: 'center',
     elevation: 2,
@@ -49,6 +48,5 @@ const styles = StyleSheet.create({
     marginBottom: 10,
     fontWeight: '500',
     paddingHorizontal: 6,
-    backgroundColor: '#fff',
   },
 })

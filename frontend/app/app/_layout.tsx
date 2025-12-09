@@ -13,6 +13,7 @@ import 'react-native-reanimated'
 import { useColorScheme } from '@/hooks/useColorScheme'
 
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
+import { CustomDarkTheme, CustomLightTheme } from '@/constants/Themes'
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -70,7 +71,9 @@ function RootLayoutNav() {
 
   return (
     <QueryClientProvider client={queryClient}>
-      <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
+      <ThemeProvider
+        value={colorScheme === 'dark' ? CustomDarkTheme : CustomLightTheme}
+      >
         <Stack>
           <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
           <Stack.Screen name="modal" options={{ presentation: 'modal' }} />

@@ -23,6 +23,10 @@ export default function TabLayout() {
     <Tabs
       screenOptions={{
         tabBarActiveTintColor: Colors[colorScheme ?? 'light'].tint,
+        tabBarLabelStyle: {
+          fontSize: 14,
+          fontWeight: '600',
+        },
         // Disable the static render of the header on web
         // to prevent a hydration error in React Navigation v6.
         headerShown: useClientOnlyValue(false, true),
@@ -72,7 +76,7 @@ export default function TabLayout() {
       <Tabs.Screen
         name="account"
         options={{
-          title: 'My Account',
+          title: 'Account',
           tabBarIcon: ({ color }) => <TabBarIcon name="user" color={color} />,
         }}
       />

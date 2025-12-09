@@ -1,4 +1,4 @@
-import { StyleSheet } from 'react-native'
+import { ScrollView, StyleSheet } from 'react-native'
 import { View } from '@/components/Themed'
 import { useRandomMovies, useTopMovies } from '@/hooks/movies/useMovies'
 import { MoviesList } from '@/components/MoviesList'
@@ -16,20 +16,22 @@ export default function MoviesScreen() {
   } = useTopMovies()
 
   return (
-    <View style={styles.container}>
+    <ScrollView contentContainerStyle={styles.container}>
       <MoviesList
+        movieListKey={'random-movies'}
         movies={randomMovies}
         isLoading={isLoadingRandomMovies}
         error={randomMoviesError}
         headerTitle="Pick a something to watch"
       />
       <MoviesList
+        movieListKey={'random-movies'}
         movies={topMovies}
         isLoading={isLoadingTopMovies}
         error={topMoviesError}
         headerTitle="Top Movies"
       />
-    </View>
+    </ScrollView>
   )
 }
 
@@ -38,5 +40,6 @@ const styles = StyleSheet.create({
     flex: 1,
     alignItems: 'center',
     justifyContent: 'center',
+    paddingVertical: 24,
   },
 })
