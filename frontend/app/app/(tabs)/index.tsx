@@ -1,5 +1,4 @@
 import { ScrollView, StyleSheet } from 'react-native'
-import { View } from '@/components/Themed'
 import { useRandomMovies, useTopMovies } from '@/hooks/movies/useMovies'
 import { MoviesList } from '@/components/MoviesList'
 

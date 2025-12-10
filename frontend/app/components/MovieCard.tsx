@@ -1,6 +1,7 @@
 import { IMovie } from '@/types/movies'
 import { Text, View } from './Themed'
-import { StyleSheet, Dimensions, Image } from 'react-native'
+import { StyleSheet, Dimensions, Image, TouchableOpacity } from 'react-native'
+import { useRouter } from 'expo-router'
 
 const { width, height } = Dimensions.get('window')
 const CARD_WIDTH = width * 0.4
@@ -10,13 +11,24 @@ const IMAGE_HEIGHT = CARD_HEIGHT * 0.9
 
 export const MovieCard = ({ movie }: { movie: IMovie }) => {
   const poster = { uri: movie.poster_url }
+  const router = useRouter()
+
+  const goToMovieScreen = () => {
+    router.push({
+      pathname: '/movies/[movieId]',
+      params: { movieId: String(movie.id) },
+    })
+  }
+
   return (
-    <View style={styles.cardContainer}>
+    <TouchableOpacity onPress={goToMovieScreen} style={styles.cardContainer}>
+      {/* <View style={styles.cardContainer}> */}
       <Image source={poster} resizeMode="cover" style={styles.posterImg} />
       <Text style={styles.title}>
         {movie.title} ({movie.release_year})
       </Text>
-    </View>
+      {/* </View> */}
+    </TouchableOpacity>
   )
 }
 
