@@ -17,7 +17,9 @@ export default function HomeButton({
       style={{ flexDirection: 'row', alignItems: 'center', paddingLeft: 8 }}
     >
       <MaterialIcons name="arrow-back-ios" size={22} color="#fff" />
-      <Text style={{ color: '#fff', fontSize: 16, marginLeft: 2 }}>
+      <Text
+        style={{ color: '#fff', fontSize: 16, marginLeft: 2, paddingRight: 10 }}
+      >
         {label}
       </Text>
     </Pressable>

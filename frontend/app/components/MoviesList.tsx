@@ -23,9 +23,6 @@ export function MoviesList({
     return <Text>Error: {error.message}</Text>
   }
 
-  // TODO: Add routing to movie page
-  // Extract id from movie-list-key-movieId
-
   return (
     <View style={styles.container}>
       {headerTitle && <Text style={styles.listHeader}>{headerTitle}</Text>}

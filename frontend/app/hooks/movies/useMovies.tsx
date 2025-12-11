@@ -1,7 +1,11 @@
 import { useMemo, useCallback } from 'react'
 import { useQuery } from '@tanstack/react-query'
 import { moviesQueryKeys } from './useMoviesQueryKeys'
-import { getRandomMoviesQueryFn, getTopMoviesQueryFn } from './useMoviesQueries'
+import {
+  getMovieQueryFn,
+  getRandomMoviesQueryFn,
+  getTopMoviesQueryFn,
+} from './useMoviesQueries'
 import { IMovie } from '@/types/movies'
 import { useMoviesService } from './useMovieService'
 
@@ -18,11 +22,18 @@ export interface UseMoviesOptions {
   refetchInterval?: number
 }
 
-export interface UseMoviesResult {
-  movies: IMovie[] | undefined
+interface BaseResult {
   isLoading: boolean
   error: Error | undefined
   refresh: () => Promise<void>
+}
+
+export interface UseMoviesResult extends BaseResult {
+  movies: IMovie[] | undefined
+}
+
+export interface UseMovieResult extends BaseResult {
+  movie: IMovie | undefined
 }
 
 export const useRandomMovies = (
@@ -97,6 +108,53 @@ export const useTopMovies = (
 
   return {
     movies: data,
+    isLoading,
+    error: movieError,
+    refresh,
+  }
+}
+
+export const useMovie = ({
+  options = {},
+  id,
+}: {
+  options: UseMoviesOptions
+  id: string | number | undefined
+}) => {
+  const { autoload, refetchInterval } = options
+  const moviesService = useMemo(() => useMoviesService(), [])
+
+  if (!id) {
+    throw new Error('Movie ID must be provided')
+  }
+
+  const queryKey = useMemo(() => moviesQueryKeys.movie(id), [id])
+
+  const { data, isLoading, error, refetch } = useQuery({
+    queryKey: queryKey,
+    queryFn: () => {
+      if (!moviesService) {
+        throw new Error('Movies service not available')
+      }
+      return getMovieQueryFn({ moviesService, id })
+    },
+    enabled: autoload && !!moviesService,
+    refetchInterval: refetchInterval,
+    refetchOnReconnect: true,
+    placeholderData: (previousData) => previousData,
+  })
+
+  const refresh = useCallback(async () => {
+    refetch()
+  }, [refetch])
+
+  const movieError = useMemo<Error | undefined>(() => {
+    if (!error) return undefined
+    return new Error('Failed to load selected movie')
+  }, [error])
+
+  return {
+    movie: data,
     isLoading,
     error: movieError,
     refresh,

@@ -26,6 +26,15 @@ export class MoviesService extends BaseService {
     }
     return response.json()
   }
+
+  async getMovie(id: string | number): Promise<IMovie> {
+    const url = `${this.MOVIES_URL}/${id}`
+    const response = await fetch(url)
+    if (!response.ok) {
+      throw new Error(`Failed to fetch movie - ID ${id} not found.`)
+    }
+    return response.json()
+  }
 }
 
 export const moviesServiceInstance = new MoviesService()

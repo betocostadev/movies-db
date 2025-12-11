@@ -20,8 +20,21 @@ export const getTopMoviesQueryFn = async (moviesService: MoviesService) => {
     throw new Error('Unable to fetch top movies')
   }
 
-  console.log('===== TOP ======')
-  console.log(topMovies)
-
   return topMovies
+}
+
+export const getMovieQueryFn = async ({
+  moviesService,
+  id,
+}: {
+  moviesService: MoviesService
+  id: string | number
+}) => {
+  const movie = await moviesService.getMovie(id)
+
+  if (!movie) {
+    throw new Error(`Unable to fetch movie with ID: ${id}`)
+  }
+
+  return movie
 }
