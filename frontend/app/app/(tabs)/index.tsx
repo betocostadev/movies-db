@@ -1,6 +1,6 @@
 import { ScrollView, StyleSheet } from 'react-native'
 import { useRandomMovies, useTopMovies } from '@/hooks/movies/useMovies'
-import { MoviesList } from '@/components/MoviesList'
+import { MoviesList } from '@/components/Movies/MoviesList'
 
 export default function MoviesScreen() {
   const {

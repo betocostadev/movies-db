@@ -138,7 +138,7 @@ export const useMovie = ({
       }
       return getMovieQueryFn({ moviesService, id })
     },
-    enabled: autoload && !!moviesService,
+    enabled: autoload && !!moviesService && !!id,
     refetchInterval: refetchInterval,
     refetchOnReconnect: true,
     placeholderData: (previousData) => previousData,

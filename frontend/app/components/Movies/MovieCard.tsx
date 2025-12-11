@@ -1,5 +1,5 @@
 import { IMovie } from '@/types/movies'
-import { Text, View } from './Themed'
+import { Text, View } from '../Themed'
 import { StyleSheet, Dimensions, Image, TouchableOpacity } from 'react-native'
 import { useRouter } from 'expo-router'
 

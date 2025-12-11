@@ -1,5 +1,5 @@
 import { IMovie, TMovieListKey } from '@/types/movies'
-import { Text, View } from './Themed'
+import { Text, View } from '../Themed'
 import { FlatList, StyleSheet } from 'react-native'
 import { MovieCard } from './MovieCard'
 import { MovieCardLoading } from './MovieCardLoading'
