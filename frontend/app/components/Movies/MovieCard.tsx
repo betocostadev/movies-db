@@ -1,5 +1,5 @@
 import { IMovie } from '@/types/movies'
-import { Text, View } from '../Themed'
+import { Text } from '../Themed'
 import { StyleSheet, Dimensions, Image, TouchableOpacity } from 'react-native'
 import { useRouter } from 'expo-router'
 
@@ -22,12 +22,10 @@ export const MovieCard = ({ movie }: { movie: IMovie }) => {
 
   return (
     <TouchableOpacity onPress={goToMovieScreen} style={styles.cardContainer}>
-      {/* <View style={styles.cardContainer}> */}
       <Image source={poster} resizeMode="cover" style={styles.posterImg} />
       <Text style={styles.title}>
         {movie.title} ({movie.release_year})
       </Text>
-      {/* </View> */}
     </TouchableOpacity>
   )
 }

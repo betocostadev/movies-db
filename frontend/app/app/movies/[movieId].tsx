@@ -1,3 +1,4 @@
+import { MovieDetails } from '@/components/Movies/MovieDetails'
 import YoutubeEmbed from '@/components/Movies/YoutubeEmbed'
 import { Text, View } from '@/components/Themed'
 import { useMovie } from '@/hooks/movies/useMovies'
@@ -38,10 +39,25 @@ export default function MovieScreen() {
 
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>{movie.title}</Text>
-      <Text style={styles.tagline}>{movie.tagline}</Text>
-      {movie.trailer_url && <YoutubeEmbed url={movie.trailer_url} />}
+      <View style={styles.header}>
+        <Text style={styles.title}>{movie.title}</Text>
+        <Text style={styles.tagline}>{movie.tagline}</Text>
+      </View>
+      <MovieDetails
+        language={movie.language}
+        popularity={movie.popularity}
+        poster_url={movie.poster_url}
+        release_year={movie.release_year}
+        score={movie.score}
+        onAddToFavorites={() => {}}
+        onAddToWatchList={() => {}}
+      />
       <Text style={styles.overview}>{movie.overview}</Text>
+      {movie.trailer_url && (
+        <View style={{ padding: 10 }}>
+          <YoutubeEmbed url={movie.trailer_url} />
+        </View>
+      )}
     </View>
   )
 }
@@ -58,6 +74,10 @@ const styles = StyleSheet.create({
   container: {
     padding: 8,
   },
+  header: {
+    marginBottom: 10,
+    padding: 4,
+  },
   title: {
     fontSize: 18,
     color: '#ada7a7',
@@ -71,8 +91,9 @@ const styles = StyleSheet.create({
     paddingTop: 4,
   },
   overview: {
-    fontSize: 14,
-    marginTop: 8,
+    fontSize: 15,
+    marginTop: 6,
+    marginBottom: 10,
     padding: 6,
     lineHeight: 24,
   },
