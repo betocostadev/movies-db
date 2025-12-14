@@ -18,17 +18,17 @@ export default function MoviesScreen() {
     <ScrollView contentContainerStyle={styles.container}>
       <MoviesList
         movieListKey={'random-movies'}
+        movies={topMovies}
+        isLoading={isLoadingTopMovies}
+        error={topMoviesError}
+        headerTitle="Top 10 Movies this week"
+      />
+      <MoviesList
+        movieListKey={'random-movies'}
         movies={randomMovies}
         isLoading={isLoadingRandomMovies}
         error={randomMoviesError}
         headerTitle="Pick a something to watch"
-      />
-      <MoviesList
-        movieListKey={'random-movies'}
-        movies={topMovies}
-        isLoading={isLoadingTopMovies}
-        error={topMoviesError}
-        headerTitle="Top Movies"
       />
     </ScrollView>
   )

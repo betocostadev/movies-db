@@ -1,10 +1,12 @@
+import Badge from '@/components/Badge'
+import MovieCasting from '@/components/Movies/MovieCasting'
 import { MovieDetails } from '@/components/Movies/MovieDetails'
 import YoutubeEmbed from '@/components/Movies/YoutubeEmbed'
 import { Text, View } from '@/components/Themed'
 import { useMovie } from '@/hooks/movies/useMovies'
 import { useLocalSearchParams, useNavigation } from 'expo-router'
 import { useEffect } from 'react'
-import { StyleSheet } from 'react-native'
+import { ScrollView, StyleSheet } from 'react-native'
 
 export default function MovieScreen() {
   const { movieId } = useLocalSearchParams()
@@ -38,7 +40,7 @@ export default function MovieScreen() {
   }
 
   return (
-    <View style={styles.container}>
+    <ScrollView style={styles.container}>
       <View style={styles.header}>
         <Text style={styles.title}>{movie.title}</Text>
         <Text style={styles.tagline}>{movie.tagline}</Text>
@@ -53,12 +55,22 @@ export default function MovieScreen() {
         onAddToWatchList={() => {}}
       />
       <Text style={styles.overview}>{movie.overview}</Text>
+      {movie.genres?.length && (
+        <View
+          style={{ flexDirection: 'row', flexWrap: 'wrap', marginVertical: 8 }}
+        >
+          {movie.genres.map(({ id, name }) => (
+            <Badge key={String(`genre-${id}`)} name={name} />
+          ))}
+        </View>
+      )}
       {movie.trailer_url && (
         <View style={{ padding: 10 }}>
           <YoutubeEmbed url={movie.trailer_url} />
         </View>
       )}
-    </View>
+      {movie.casting?.length && <MovieCasting cast={movie.casting} />}
+    </ScrollView>
   )
 }
 
