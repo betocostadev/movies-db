@@ -1,7 +1,9 @@
 import Badge from '@/components/Badge'
+import { MovieCardLoading } from '@/components/Movies/MovieCardLoading'
 import MovieCasting from '@/components/Movies/MovieCasting'
 import { MovieDetails } from '@/components/Movies/MovieDetails'
 import YoutubeEmbed from '@/components/Movies/YoutubeEmbed'
+import Skeleton from '@/components/Skeleton'
 import { Text, View } from '@/components/Themed'
 import { useMovie } from '@/hooks/movies/useMovies'
 import { useLocalSearchParams, useNavigation } from 'expo-router'
@@ -17,10 +19,6 @@ export default function MovieScreen() {
   })
 
   const movieTitle = movie?.title || 'Movie'
-  console.log('=== MOVIES SCREEN ===')
-  console.log('Is loading ?', isLoading)
-  console.log('Error ?', error)
-  console.log(movie)
 
   useEffect(() => {
     navigation.setOptions({
@@ -29,7 +27,18 @@ export default function MovieScreen() {
     })
   }, [navigation, movieTitle])
 
-  if (!movie) {
+  if (isLoading) {
+    return (
+      <View style={styles.container}>
+        <Skeleton width="50%" height={22} />
+        <Skeleton width="100%" height={22} />
+        <MovieCardLoading />
+        <Skeleton width="100%" height={100} />
+      </View>
+    )
+  }
+
+  if (!movie || error) {
     return (
       <View style={styles.errorContainer}>
         <Text style={styles.errorMessage}>
@@ -66,10 +75,16 @@ export default function MovieScreen() {
       )}
       {movie.trailer_url && (
         <View style={{ padding: 10 }}>
+          <Text style={styles.trailers}>Trailers</Text>
           <YoutubeEmbed url={movie.trailer_url} />
         </View>
       )}
-      {movie.casting?.length && <MovieCasting cast={movie.casting} />}
+      {movie.casting?.length && (
+        <View>
+          <Text style={styles.castingTitle}>Casting</Text>
+          <MovieCasting cast={movie.casting} />
+        </View>
+      )}
     </ScrollView>
   )
 }
@@ -91,14 +106,14 @@ const styles = StyleSheet.create({
     padding: 4,
   },
   title: {
-    fontSize: 18,
-    color: '#ada7a7',
+    fontSize: 20,
+    color: '#b9b2b2',
     fontWeight: '700',
     paddingLeft: 4,
   },
   tagline: {
-    fontSize: 16,
-    color: '#ada7a7',
+    fontSize: 18,
+    color: '#b3acac',
     paddingLeft: 4,
     paddingTop: 4,
   },
@@ -108,5 +123,15 @@ const styles = StyleSheet.create({
     marginBottom: 10,
     padding: 6,
     lineHeight: 24,
+  },
+  trailers: {
+    fontSize: 18,
+    color: '#c8c0c0',
+    marginBottom: 12,
+  },
+  castingTitle: {
+    fontSize: 18,
+    color: '#c8c0c0',
+    marginVertical: 10,
   },
 })

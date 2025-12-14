@@ -11,9 +11,9 @@ export default function Badge({ name }: { name: string }) {
 
 const styles = StyleSheet.create({
   badge: {
-    backgroundColor: '#292c34',
+    backgroundColor: '#2c2f37',
     borderRadius: 12,
-    paddingVertical: 4,
+    paddingVertical: 6,
     paddingHorizontal: 12,
     marginRight: 8,
     marginBottom: 8,

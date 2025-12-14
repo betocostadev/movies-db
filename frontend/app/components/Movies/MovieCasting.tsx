@@ -2,7 +2,7 @@ import { TMovieCasting } from '@/types/movies'
 import { Text, View } from '../Themed'
 import { Dimensions, Image, StyleSheet } from 'react-native'
 
-const CARD_WIDTH = 140
+const CARD_WIDTH = 160
 const CARD_HEIGHT = 60
 
 export default function MovieCasting({
@@ -46,7 +46,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     width: CARD_WIDTH,
     height: CARD_HEIGHT,
-    backgroundColor: '#292c34',
+    backgroundColor: '#2c2f37',
     borderRadius: 10,
     marginRight: 10,
     marginBottom: 10,
