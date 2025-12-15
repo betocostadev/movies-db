@@ -7,9 +7,6 @@ export const getRandomMoviesQueryFn = async (moviesService: MoviesService) => {
     throw new Error('Unable to fetch random movies')
   }
 
-  console.log('===== RANDOM ======')
-  console.log(randomMovies)
-
   return randomMovies
 }
 

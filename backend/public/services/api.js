@@ -1,3 +1,5 @@
+import Store from './Store.js'
+
 export const API = {
   baseURL: '/api/',
   getTopMovies: async () => {
@@ -22,6 +24,17 @@ export const API = {
   },
   login: async (email, password) => {
     return await API.send('account/authenticate/', { email, password })
+  },
+  getCurrentUser: async () => {
+    const jwt = Store.jwt
+    if (!jwt) return null
+    const response = await fetch('/api/account/', {
+      headers: {
+        Authorization: `Bearer ${jwt}`,
+      },
+    })
+    if (!response.ok) return null
+    return response.json()
   },
   getFavorites: async () => {
     try {

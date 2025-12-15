@@ -141,7 +141,8 @@
     <!-- Account page template -->
     <template id="template-account">
       <section id="account">
-        <h2>You are Logged In</h2>
+        <!-- <h2>You are Logged In</h2> -->
+         <h2>Welcome, <span id="user-name">Loading...</span></h2>
         <button onclick="app.logout()">Log out</button>
         <button onclick="app.Router.go('/account/favorites')">Your Favorites</button>
         <button onclick="app.Router.go('/account/watchlist')">Your Watchlist</button>

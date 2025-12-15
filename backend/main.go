@@ -93,6 +93,7 @@ func main() {
 	http.Handle(routes.AccountWatchlist, accountHandler.AuthMiddleware(http.HandlerFunc(accountHandler.GetWatchlist)))
 	http.Handle(routes.SaveToCollection,
 		accountHandler.AuthMiddleware(http.HandlerFunc(accountHandler.SaveToCollection)))
+	http.Handle(routes.AccountData, accountHandler.AuthMiddleware(http.HandlerFunc(accountHandler.GetCurrentUser)))
 
 	catchAllClientRoutesHandler := func(w http.ResponseWriter, r *http.Request) {
 		http.ServeFile(w, r, "./public/index.html")

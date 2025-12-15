@@ -6,6 +6,7 @@ import (
 	"net/http"
 	"strings"
 	"time"
+	"errors"
 
 	"betocosta.com/reelingit/data"
 	"betocosta.com/reelingit/logger"
@@ -173,6 +174,50 @@ func (h *AccountHandler) AuthMiddleware(next http.Handler) http.Handler {
 	})
 }
 
+// GetUserFromRequest extracts the JWT from the Authorization header, validates it,
+// extracts the user's email, and fetches the user from the database.
+func GetUserFromRequest(r *http.Request, storage data.AccountStorage, log *logger.Logger) (*models.User, error) {
+    authHeader := r.Header.Get("Authorization")
+    if authHeader == "" {
+			return nil, errors.New("missing authorization header")
+    }
+
+    // Remove "Bearer " prefix if present
+    tokenStr := strings.TrimPrefix(authHeader, "Bearer ")
+
+    // Parse and validate the token
+    tokenObj, err := jwt.Parse(tokenStr, func(t *jwt.Token) (interface{}, error) {
+			if _, ok := t.Method.(*jwt.SigningMethodHMAC); !ok {
+					return nil, jwt.ErrSignatureInvalid
+			}
+			return []byte(token.GetJWTSecret(*log)), nil
+    })
+    if err != nil || !tokenObj.Valid {
+			return nil, errors.New("invalid token")
+    }
+
+    // Extract claims from the token
+    claims, ok := tokenObj.Claims.(jwt.MapClaims)
+    if !ok {
+			return nil, errors.New("invalid token claims")
+    }
+
+    // Get the email from claims
+    email, ok := claims["email"].(string)
+    if !ok {
+			return nil, errors.New("email not found in token")
+    }
+
+    // Fetch the user from the database
+    // You may need to get a storage instance here; adjust as needed for your app
+    user, err := storage.GetAccountDetails(email)
+    if err != nil {
+			return nil, err
+    }
+
+    return &user, nil
+}
+
 func (h *AccountHandler) SaveToCollection(w http.ResponseWriter, r *http.Request) {
 	type CollectionRequest struct {
 		MovieID    int    `json:"movie_id"`
@@ -238,6 +283,15 @@ func (h *AccountHandler) GetWatchlist(w http.ResponseWriter, r *http.Request) {
 	if err := h.writeJSONResponse(w, details.Watchlist); err == nil {
 		h.logger.Info("Successfully sent favorites")
 	}
+}
+
+func (h *AccountHandler) GetCurrentUser(w http.ResponseWriter, r *http.Request) {
+	user, err := GetUserFromRequest(r, h.storage, h.logger)
+	if err != nil {
+			http.Error(w, "Unauthorized", http.StatusUnauthorized)
+			return
+	}
+	json.NewEncoder(w).Encode(user)
 }
 
 func NewAccountHandler(storage data.AccountStorage, log *logger.Logger) *AccountHandler {

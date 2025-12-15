@@ -18,5 +18,6 @@ const (
 	// Protected API endpoints
 	AccountFavorites = "/api/account/favorites/"
 	AccountWatchlist = "/api/account/watchlist/"
+	AccountData = "/api/account/"
 	SaveToCollection = "/api/account/save-to-collection/"
 )
