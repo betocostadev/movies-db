@@ -17,3 +17,19 @@ export const useRegisterUser = () => {
     // onError, onSettled, etc. as needed
   })
 }
+
+// useMutation({
+//   mutationFn: mutationFn,
+//   onSuccess: (data, variables, context) => {
+//     // Called on success
+//     // e.g., show toast, invalidate queries
+//   },
+//   onError: (error, variables, context) => {
+//     // Called on error
+//     // e.g., show error message
+//   },
+//   onSettled: (data, error, variables, context) => {
+//     // Called on both success and error
+//     // e.g., cleanup, always invalidate queries
+//   },
+// })

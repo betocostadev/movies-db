@@ -1,5 +1,6 @@
-import { StyleSheet, Dimensions, Image, TouchableOpacity } from 'react-native'
+import { StyleSheet, Dimensions, Image } from 'react-native'
 import { Text, View } from '../Themed'
+import ActionButton from '../ActionButton'
 
 const { width } = Dimensions.get('window')
 const CARD_WIDTH = width * 0.9
@@ -47,18 +48,14 @@ export const MovieDetails = ({
           </Text>
         </View>
         <View style={styles.actionsRow}>
-          <TouchableOpacity
-            style={styles.actionButton}
-            onPress={onAddToFavorites}
-          >
-            <Text style={styles.actionText}>Add to Favorites</Text>
-          </TouchableOpacity>
-          <TouchableOpacity
-            style={styles.actionButton}
-            onPress={onAddToWatchList}
-          >
-            <Text style={styles.actionText}>Add to Watchlist</Text>
-          </TouchableOpacity>
+          <ActionButton
+            label="Add to Favorites"
+            onPressHandler={onAddToFavorites}
+          />
+          <ActionButton
+            label="Add to Watchlist"
+            onPressHandler={onAddToWatchList}
+          />
         </View>
       </View>
     </View>
@@ -112,19 +109,5 @@ const styles = StyleSheet.create({
   actionsRow: {
     marginTop: 10,
     flexDirection: 'column',
-  },
-  actionButton: {
-    backgroundColor: '#7bd695',
-    borderRadius: 6,
-    paddingVertical: 6,
-    paddingHorizontal: 10,
-    marginRight: 8,
-    marginTop: 8,
-    alignItems: 'center',
-  },
-  actionText: {
-    color: '#060606',
-    fontWeight: '600',
-    fontSize: 14,
   },
 })
