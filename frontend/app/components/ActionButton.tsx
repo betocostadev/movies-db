@@ -6,6 +6,8 @@ import {
   ViewStyle,
 } from 'react-native'
 import { Text } from './Themed'
+import { FontSizes } from '@/constants/ThemeValues'
+import { useThemeColor } from './Themed'
 
 type ActionButtonProps = {
   buttonStyles?: StyleProp<ViewStyle>
@@ -20,19 +22,29 @@ export default function ActionButton({
   onPressHandler,
   textStyles,
 }: ActionButtonProps) {
+  const backgroundColor = useThemeColor({}, 'btnPrimaryBackground')
+  const textColor = useThemeColor({}, 'btnPrimaryText')
+
   return (
     <TouchableOpacity
-      style={[styles.actionButton, buttonStyles]}
+      style={[styles.actionButton, { backgroundColor }, buttonStyles]}
       onPress={onPressHandler}
     >
-      <Text style={[styles.actionText, textStyles]}>{label}</Text>
+      <Text
+        style={[
+          styles.actionText,
+          { color: textColor, fontSize: FontSizes.small },
+          textStyles,
+        ]}
+      >
+        {label}
+      </Text>
     </TouchableOpacity>
   )
 }
 
 const styles = StyleSheet.create({
   actionButton: {
-    backgroundColor: '#7bd695',
     borderRadius: 6,
     paddingVertical: 6,
     paddingHorizontal: 10,
@@ -41,8 +53,6 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   actionText: {
-    color: '#060606',
     fontWeight: '600',
-    fontSize: 14,
   },
 })

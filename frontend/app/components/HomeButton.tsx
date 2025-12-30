@@ -2,6 +2,7 @@ import { RelativePathString, useRouter } from 'expo-router'
 import { Pressable } from 'react-native'
 import { Text } from '@/components/Themed'
 import { MaterialIcons } from '@expo/vector-icons'
+import { Paddings } from '@/constants/ThemeValues'
 
 export default function HomeButton({
   pathTo,
@@ -14,7 +15,11 @@ export default function HomeButton({
   return (
     <Pressable
       onPress={() => router.replace(pathTo as RelativePathString)}
-      style={{ flexDirection: 'row', alignItems: 'center', paddingLeft: 8 }}
+      style={{
+        flexDirection: 'row',
+        alignItems: 'center',
+        paddingLeft: Paddings.medium,
+      }}
     >
       <MaterialIcons name="arrow-back-ios" size={22} color="#fff" />
       <Text

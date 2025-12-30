@@ -1,5 +1,5 @@
 import { StyleSheet, Dimensions, Image } from 'react-native'
-import { Text, View } from '../Themed'
+import { Text, useThemeColor, View } from '../Themed'
 import ActionButton from '../ActionButton'
 
 const { width } = Dimensions.get('window')
@@ -24,30 +24,33 @@ export const MovieDetails = ({
   onAddToWatchList: () => void
 }) => {
   const poster = { uri: poster_url }
+  const cardBackground = useThemeColor({}, 'cardBackground')
 
   return (
-    <View style={styles.cardContainer}>
+    <View style={[styles.cardContainer, { backgroundColor: cardBackground }]}>
       <Image source={poster} resizeMode="cover" style={styles.posterImg} />
-      <View style={styles.detailsContainer}>
-        <View style={styles.detailRow}>
+      <View
+        style={[styles.detailsContainer, { backgroundColor: cardBackground }]}
+      >
+        <View style={[styles.detailRow, { backgroundColor: cardBackground }]}>
           <Text style={styles.label}>Release Year:</Text>
           <Text style={styles.value}>{release_year}</Text>
         </View>
-        <View style={styles.detailRow}>
+        <View style={[styles.detailRow, { backgroundColor: cardBackground }]}>
           <Text style={styles.label}>Score:</Text>
           <Text style={styles.value}>{score} / 10</Text>
         </View>
-        <View style={styles.detailRow}>
+        <View style={[styles.detailRow, { backgroundColor: cardBackground }]}>
           <Text style={styles.label}>Language:</Text>
           <Text style={styles.value}>{language}</Text>
         </View>
-        <View style={styles.detailRow}>
+        <View style={[styles.detailRow, { backgroundColor: cardBackground }]}>
           <Text style={styles.label}>Popularity:</Text>
           <Text style={styles.value}>
             {popularity ? popularity.toFixed(2) : 'Not rated'}
           </Text>
         </View>
-        <View style={styles.actionsRow}>
+        <View style={[styles.actionsRow, { backgroundColor: cardBackground }]}>
           <ActionButton
             label="Add to Favorites"
             onPressHandler={onAddToFavorites}
@@ -67,7 +70,6 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     width: CARD_WIDTH,
     height: CARD_HEIGHT,
-    backgroundColor: '#222d2a',
     borderRadius: 12,
     overflow: 'hidden',
     elevation: 3,

@@ -1,5 +1,5 @@
 import { IMovie, TMovieListKey } from '@/types/movies'
-import { Text, View } from '../Themed'
+import { Text, useThemeColor, View } from '../Themed'
 import { FlatList, StyleSheet } from 'react-native'
 import { MovieCard } from './MovieCard'
 import { MovieCardLoading } from './MovieCardLoading'
@@ -18,6 +18,7 @@ export function MoviesList({
   headerTitle?: string
 }) {
   const skeletonCount = 6
+  const titleColor = useThemeColor({}, 'title')
 
   if (error) {
     return <Text>Error: {error.message}</Text>
@@ -25,7 +26,11 @@ export function MoviesList({
 
   return (
     <View style={styles.container}>
-      {headerTitle && <Text style={styles.listHeader}>{headerTitle}</Text>}
+      {headerTitle && (
+        <Text style={[styles.listHeader, { color: titleColor }]}>
+          {headerTitle}
+        </Text>
+      )}
       <FlatList
         data={isLoading ? Array.from({ length: skeletonCount }) : movies}
         renderItem={({ item, index }) =>

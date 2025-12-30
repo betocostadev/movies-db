@@ -55,12 +55,13 @@ const styles = StyleSheet.create({
     paddingVertical: 12,
   },
   card: {
-    width: '90%',
+    width: '94%',
     backgroundColor: '#222d2a',
     marginVertical: 8,
     marginHorizontal: 12,
     paddingHorizontal: 2,
-    paddingVertical: 10,
+    paddingTop: 10,
+    paddingBottom: 20,
     borderRadius: 8,
     overflow: 'hidden',
     alignItems: 'center',
@@ -74,6 +75,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#222d2a',
     marginHorizontal: 10,
     marginVertical: 10,
+    padding: 2,
     width: '80%',
   },
   formLabel: {
@@ -84,7 +86,7 @@ const styles = StyleSheet.create({
   formInput: {
     backgroundColor: '#e4e4e4',
     width: '100%',
-    padding: 6,
+    padding: 8,
     borderRadius: 4,
   },
   actionButton: {
