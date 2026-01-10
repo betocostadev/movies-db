@@ -1,8 +1,11 @@
 import { StyleSheet } from 'react-native'
 
 import { Text, View } from '@/components/Themed'
+import { useAuthGuard } from '@/hooks/account/useAuth'
 
 export default function FavoritesScreen() {
+  useAuthGuard()
+
   return (
     <View style={styles.container}>
       <Text style={styles.title}>Favorites</Text>

@@ -1,4 +1,4 @@
-import { API } from './services/API.js'
+import { API } from './services/api.js'
 // import { HomePage } from './components/HomePage.js'
 
 import './components/YoutubeEmbed.js'

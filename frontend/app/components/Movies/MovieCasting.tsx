@@ -1,6 +1,6 @@
 import { TMovieCasting } from '@/types/movies'
 import { Text, View } from '../Themed'
-import { Dimensions, Image, StyleSheet } from 'react-native'
+import { Image, StyleSheet } from 'react-native'
 
 const CARD_WIDTH = 160
 const CARD_HEIGHT = 60

@@ -10,6 +10,7 @@ import { useColorScheme } from '@/hooks/useColorScheme'
 
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { CustomDarkTheme, CustomLightTheme } from '@/constants/Themes'
+import { AuthProvider } from '@/contexts/authContext'
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -66,16 +67,18 @@ function RootLayoutNav() {
   const colorScheme = useColorScheme()
 
   return (
-    <QueryClientProvider client={queryClient}>
-      <ThemeProvider
-        value={colorScheme === 'dark' ? CustomDarkTheme : CustomLightTheme}
-      >
-        <Stack>
-          <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-          <Stack.Screen name="movies" options={{ headerShown: false }} />
-          <Stack.Screen name="modal" options={{ presentation: 'modal' }} />
-        </Stack>
-      </ThemeProvider>
-    </QueryClientProvider>
+    <AuthProvider>
+      <QueryClientProvider client={queryClient}>
+        <ThemeProvider
+          value={colorScheme === 'dark' ? CustomDarkTheme : CustomLightTheme}
+        >
+          <Stack>
+            <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+            <Stack.Screen name="movies" options={{ headerShown: false }} />
+            <Stack.Screen name="modal" options={{ presentation: 'modal' }} />
+          </Stack>
+        </ThemeProvider>
+      </QueryClientProvider>
+    </AuthProvider>
   )
 }

@@ -1,5 +1,5 @@
 import ActionButton from '@/components/ActionButton'
-import { Text, View } from '@/components/Themed'
+import { Text, useThemeColor, View } from '@/components/Themed'
 import { useState } from 'react'
 import { StyleSheet, TextInput, TouchableOpacity } from 'react-native'
 
@@ -7,6 +7,7 @@ export default function AccountScreen() {
   // TODO: After creating the user account query, check for credentials to decide
   // to show the Login Form or User Account Data
   const [mode, setMode] = useState<'register' | 'login'>('login')
+  const cardBackground = useThemeColor({}, 'cardBackground')
 
   const onLogin = () => {
     return null
@@ -22,13 +23,25 @@ export default function AccountScreen() {
 
   return (
     <View style={styles.container}>
-      <View style={styles.card}>
+      <View style={[{ backgroundColor: cardBackground }, styles.card]}>
         <Text style={styles.title}>Login into your account</Text>
-        <View style={styles.formInputContainer}>
-          <Text style={styles.formLabel}>Email</Text>
+        <View
+          style={[
+            { backgroundColor: cardBackground },
+            styles.formInputContainer,
+          ]}
+        >
+          <Text style={[{ backgroundColor: cardBackground }, styles.formLabel]}>
+            Email
+          </Text>
           <TextInput style={styles.formInput} placeholder="email" />
         </View>
-        <View style={styles.formInputContainer}>
+        <View
+          style={[
+            { backgroundColor: cardBackground },
+            styles.formInputContainer,
+          ]}
+        >
           <Text style={styles.formLabel}>Password</Text>
           <TextInput style={styles.formInput} placeholder="password" />
         </View>
@@ -56,7 +69,6 @@ const styles = StyleSheet.create({
   },
   card: {
     width: '94%',
-    backgroundColor: '#222d2a',
     marginVertical: 8,
     marginHorizontal: 12,
     paddingHorizontal: 2,
@@ -72,14 +84,12 @@ const styles = StyleSheet.create({
     shadowRadius: 4,
   },
   formInputContainer: {
-    backgroundColor: '#222d2a',
     marginHorizontal: 10,
     marginVertical: 10,
     padding: 2,
     width: '80%',
   },
   formLabel: {
-    backgroundColor: '#222d2a',
     fontSize: 16,
     marginBottom: 10,
   },
