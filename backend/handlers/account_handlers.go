@@ -291,7 +291,7 @@ func (h *AccountHandler) GetCurrentUser(w http.ResponseWriter, r *http.Request) 
 			http.Error(w, "Unauthorized", http.StatusUnauthorized)
 			return
 	}
-	json.NewEncoder(w).Encode(user)
+	json.NewEncoder(w).Encode(user.ToUserInfo())
 }
 
 func NewAccountHandler(storage data.AccountStorage, log *logger.Logger) *AccountHandler {

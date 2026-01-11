@@ -1,19 +1,39 @@
 import ActionButton from '@/components/ActionButton'
 import { Text, useThemeColor, View } from '@/components/Themed'
-import { useState } from 'react'
+import { useUserData } from '@/hooks/account/useAccount'
+import { useEffect, useState } from 'react'
 import { StyleSheet, TextInput, TouchableOpacity } from 'react-native'
 
 export default function AccountScreen() {
-  // TODO: After creating the user account query, check for credentials to decide
-  // to show the Login Form or User Account Data
-  const [mode, setMode] = useState<'register' | 'login'>('login')
+  const [mode, setMode] = useState<'register' | 'login' | 'user'>('user')
   const cardBackground = useThemeColor({}, 'cardBackground')
+
+  const {
+    user: userData,
+    isLoading: isLoadingUser,
+    error: userDataError,
+  } = useUserData()
+
+  console.log('User data: ', userData)
+  console.log('Loading: ', isLoadingUser)
+  console.log('Error? ', userDataError?.message)
+
+  useEffect(() => {
+    if (userDataError?.message === 'UNAUTHORIZED') {
+      console.log('User not logged in!')
+      setMode('login')
+    } else if (userData) {
+      setMode('user')
+    } else if (userDataError) {
+      setMode('login')
+    }
+  }, [userData, userDataError])
 
   const onLogin = () => {
     return null
   }
+
   if (mode === 'register') {
-    console.log(mode)
     return (
       <View>
         <Text style={styles.title}>Register a new account</Text>
@@ -21,37 +41,49 @@ export default function AccountScreen() {
     )
   }
 
+  if (mode === 'login') {
+    return (
+      <View style={styles.container}>
+        <View style={[{ backgroundColor: cardBackground }, styles.card]}>
+          <Text style={styles.title}>Login into your account</Text>
+          <View
+            style={[
+              { backgroundColor: cardBackground },
+              styles.formInputContainer,
+            ]}
+          >
+            <Text
+              style={[{ backgroundColor: cardBackground }, styles.formLabel]}
+            >
+              Email
+            </Text>
+            <TextInput style={styles.formInput} placeholder="email" />
+          </View>
+          <View
+            style={[
+              { backgroundColor: cardBackground },
+              styles.formInputContainer,
+            ]}
+          >
+            <Text style={styles.formLabel}>Password</Text>
+            <TextInput style={styles.formInput} placeholder="password" />
+          </View>
+          <ActionButton
+            buttonStyles={{ paddingHorizontal: 20, marginBottom: 10 }}
+            onPressHandler={onLogin}
+            label="Login"
+          />
+          <Text>If you don't have an account, please: REGISTER HERE</Text>
+        </View>
+      </View>
+    )
+  }
+
+  // mode === 'user'
   return (
     <View style={styles.container}>
-      <View style={[{ backgroundColor: cardBackground }, styles.card]}>
-        <Text style={styles.title}>Login into your account</Text>
-        <View
-          style={[
-            { backgroundColor: cardBackground },
-            styles.formInputContainer,
-          ]}
-        >
-          <Text style={[{ backgroundColor: cardBackground }, styles.formLabel]}>
-            Email
-          </Text>
-          <TextInput style={styles.formInput} placeholder="email" />
-        </View>
-        <View
-          style={[
-            { backgroundColor: cardBackground },
-            styles.formInputContainer,
-          ]}
-        >
-          <Text style={styles.formLabel}>Password</Text>
-          <TextInput style={styles.formInput} placeholder="password" />
-        </View>
-        <ActionButton
-          buttonStyles={{ paddingHorizontal: 20, marginBottom: 10 }}
-          onPressHandler={onLogin}
-          label="Login"
-        />
-        <Text>If you don't have an account, please: REGISTER HERE</Text>
-      </View>
+      <Text style={styles.title}>Welcome, {userData?.name || 'User'}!</Text>
+      {/* Add more user info here */}
     </View>
   )
 }

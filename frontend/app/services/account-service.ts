@@ -1,5 +1,6 @@
 import { IUser } from '@/types/user'
 import { BaseService } from './base-service'
+import { getJwt } from '@/storage/accountStorage'
 
 // Account API endpoints
 // AccountRegisterRoute     = "/api/account/register/"
@@ -30,6 +31,20 @@ export class AccountService extends BaseService {
     console.log('Body: ', { name, email, password })
 
     return true
+  }
+
+  async getUserData() {
+    const jwt = await getJwt()
+    const response = await fetch(this.ACCOUNT_URL, {
+      headers: { Authorization: jwt ? `Bearer ${jwt}` : '' },
+    })
+    if (response.status === 401) {
+      throw new Error('UNAUTHORIZED')
+    }
+    if (!response.ok) {
+      throw new Error('Failed to fetch user data')
+    }
+    return response.json()
   }
 }
 
