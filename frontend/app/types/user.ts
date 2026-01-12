@@ -8,3 +8,11 @@ export interface IUser {
   favorites: IMovie[]
   watchlist: IMovie[]
 }
+
+export interface IUserInfo {
+  id: number
+  name: string
+  email: string
+  favorites: IMovie[]
+  watchlist: IMovie[]
+}

@@ -2,10 +2,12 @@ import { useMemo, useCallback } from 'react'
 import { useQuery } from '@tanstack/react-query'
 import { useAccountService } from './useAccountService'
 import { useMutation, useQueryClient } from '@tanstack/react-query'
-import { registerUserMutationFn } from './useAccountMutations'
+import { loginMutationFn, registerUserMutationFn } from './useAccountMutations'
 import { IUser } from '@/types/user'
 import { accountQueryKeys } from './useAccountQueryKeys'
 import { getUserDataQueryFn } from './useAccountQueries'
+import { useAuth } from '@/contexts/authContext'
+import { removeJwt } from '@/storage/accountStorage'
 
 export interface UseUserOptions {
   /**
@@ -33,6 +35,7 @@ export interface UseUserResult extends BaseResult {
 export const useUserData = (options: UseUserOptions = {}): UseUserResult => {
   const { autoload, refetchInterval } = options
   const accountService = useMemo(() => useAccountService(), [])
+  const { user } = useAuth()
 
   const queryKey = useMemo(() => accountQueryKeys.current(), [])
 
@@ -44,7 +47,7 @@ export const useUserData = (options: UseUserOptions = {}): UseUserResult => {
       }
       return getUserDataQueryFn(accountService)
     },
-    enabled: autoload && !!accountService,
+    enabled: autoload && !!accountService && !!user,
     refetchInterval: refetchInterval,
     refetchOnReconnect: true,
     placeholderData: (previousData) => previousData,
@@ -67,18 +70,65 @@ export const useUserData = (options: UseUserOptions = {}): UseUserResult => {
   }
 }
 
-export const useRegisterUser = () => {
+export const useLogin = () => {
   const accountService = useAccountService()
+  const queryClient = useQueryClient()
+  const { setUser } = useAuth()
+
+  const mutation = useMutation({
+    mutationFn: (creds: { email: string; password: string }) =>
+      loginMutationFn(accountService, creds),
+    onSuccess: async () => {
+      queryClient.invalidateQueries({ queryKey: accountQueryKeys.current() })
+      const userData = await accountService.getUserData()
+      setUser(userData)
+    },
+  })
+
+  return {
+    login: mutation.mutateAsync,
+    isPending: mutation.isPending,
+    isError: mutation.isError,
+    error: mutation.error as Error | undefined,
+    reset: mutation.reset,
+  }
+}
+
+export const useRegisterUser = () => {
   const queryClient = useQueryClient()
 
   return useMutation({
     mutationFn: (user: Pick<IUser, 'name' | 'email' | 'password'>) =>
-      registerUserMutationFn(accountService, user),
+      registerUserMutationFn(user),
     onSuccess: (data) => {
       queryClient.invalidateQueries({ queryKey: accountQueryKeys.current() })
     },
     // onError, onSettled, etc. as needed
   })
+}
+
+export const useLogout = (onSuccess?: () => void) => {
+  const queryClient = useQueryClient()
+  const { setUser } = useAuth()
+
+  const mutation = useMutation({
+    mutationFn: async () => {
+      await removeJwt()
+      setUser(null)
+      queryClient.removeQueries({ queryKey: accountQueryKeys.current() })
+    },
+    onSuccess: () => {
+      if (onSuccess) onSuccess()
+    },
+  })
+
+  return {
+    logout: mutation.mutateAsync,
+    isPending: mutation.isPending,
+    isError: mutation.isError,
+    error: mutation.error as Error | undefined,
+    reset: mutation.reset,
+  }
 }
 
 // useMutation({

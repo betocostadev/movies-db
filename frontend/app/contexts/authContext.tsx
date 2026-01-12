@@ -1,4 +1,4 @@
-import { IUser } from '@/types/user'
+import { IUserInfo } from '@/types/user'
 import React, {
   createContext,
   useContext,
@@ -9,14 +9,14 @@ import React, {
 } from 'react'
 
 type AuthContextType = {
-  user: IUser | null
-  setUser: Dispatch<SetStateAction<IUser | null>>
+  user: IUserInfo | null
+  setUser: Dispatch<SetStateAction<IUserInfo | null>>
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined)
 
 export const AuthProvider = ({ children }: { children: ReactNode }) => {
-  const [user, setUser] = useState<IUser | null>(null)
+  const [user, setUser] = useState<IUserInfo | null>(null)
 
   return (
     <AuthContext.Provider value={{ user, setUser }}>

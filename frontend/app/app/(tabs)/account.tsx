@@ -1,12 +1,18 @@
 import ActionButton from '@/components/ActionButton'
+import LoginForm from '@/components/LoginForm'
 import { Text, useThemeColor, View } from '@/components/Themed'
-import { useUserData } from '@/hooks/account/useAccount'
+import { useLogout, useUserData } from '@/hooks/account/useAccount'
+import { useRouter } from 'expo-router'
 import { useEffect, useState } from 'react'
-import { StyleSheet, TextInput, TouchableOpacity } from 'react-native'
+import { StyleSheet } from 'react-native'
 
 export default function AccountScreen() {
   const [mode, setMode] = useState<'register' | 'login' | 'user'>('user')
   const cardBackground = useThemeColor({}, 'cardBackground')
+  const router = useRouter()
+  const { logout: handleLogout, isPending } = useLogout(() =>
+    router.replace('/'),
+  )
 
   const {
     user: userData,
@@ -29,10 +35,6 @@ export default function AccountScreen() {
     }
   }, [userData, userDataError])
 
-  const onLogin = () => {
-    return null
-  }
-
   if (mode === 'register') {
     return (
       <View>
@@ -45,45 +47,22 @@ export default function AccountScreen() {
     return (
       <View style={styles.container}>
         <View style={[{ backgroundColor: cardBackground }, styles.card]}>
-          <Text style={styles.title}>Login into your account</Text>
-          <View
-            style={[
-              { backgroundColor: cardBackground },
-              styles.formInputContainer,
-            ]}
-          >
-            <Text
-              style={[{ backgroundColor: cardBackground }, styles.formLabel]}
-            >
-              Email
-            </Text>
-            <TextInput style={styles.formInput} placeholder="email" />
-          </View>
-          <View
-            style={[
-              { backgroundColor: cardBackground },
-              styles.formInputContainer,
-            ]}
-          >
-            <Text style={styles.formLabel}>Password</Text>
-            <TextInput style={styles.formInput} placeholder="password" />
-          </View>
-          <ActionButton
-            buttonStyles={{ paddingHorizontal: 20, marginBottom: 10 }}
-            onPressHandler={onLogin}
-            label="Login"
-          />
+          <LoginForm />
           <Text>If you don't have an account, please: REGISTER HERE</Text>
         </View>
       </View>
     )
   }
 
-  // mode === 'user'
   return (
     <View style={styles.container}>
       <Text style={styles.title}>Welcome, {userData?.name || 'User'}!</Text>
       {/* Add more user info here */}
+      <ActionButton
+        buttonStyles={{ paddingHorizontal: 20, marginBottom: 10 }}
+        onPressHandler={handleLogout}
+        label={isPending ? 'Logging out...' : 'Logout'}
+      />
     </View>
   )
 }

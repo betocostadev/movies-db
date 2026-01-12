@@ -53,23 +53,27 @@ func (h *AccountHandler) writeJSONResponse(w http.ResponseWriter, data interface
 }
 
 func (h *AccountHandler) handleStorageError(w http.ResponseWriter, err error, context string) bool {
-	if err != nil {
-		switch err {
-		case data.ErrAuthenticationValidation, data.ErrUserAlreadyExists, data.ErrRegistrationValidation:
-			w.Header().Set("Content-Type", "application/json")
-			w.WriteHeader(http.StatusUnauthorized)
-			json.NewEncoder(w).Encode(AuthResponse{Success: false, Message: err.Error()})
-			return true
-		case data.ErrUserNotFound:
-			http.Error(w, "User not found", http.StatusNotFound)
-			return true
-		default:
-			h.logger.Error(context, err)
-			http.Error(w, "Internal server error", http.StatusInternalServerError)
-			return true
-		}
-	}
-	return false
+    if err != nil {
+        switch err {
+        case data.ErrAuthenticationValidation, data.ErrUserAlreadyExists, data.ErrRegistrationValidation:
+            w.Header().Set("Content-Type", "application/json")
+            w.WriteHeader(http.StatusUnauthorized)
+            json.NewEncoder(w).Encode(AuthResponse{Success: false, Message: err.Error()})
+            return true
+        case data.ErrUserNotFound:
+            w.Header().Set("Content-Type", "application/json")
+            w.WriteHeader(http.StatusNotFound)
+            json.NewEncoder(w).Encode(AuthResponse{Success: false, Message: "User not found"})
+            return true
+        default:
+            h.logger.Error(context, err)
+            w.Header().Set("Content-Type", "application/json")
+            w.WriteHeader(http.StatusInternalServerError)
+            json.NewEncoder(w).Encode(AuthResponse{Success: false, Message: "Internal server error"})
+            return true
+        }
+    }
+    return false
 }
 
 func (h *AccountHandler) Register(w http.ResponseWriter, r *http.Request) {
@@ -105,7 +109,9 @@ func (h *AccountHandler) Authenticate(w http.ResponseWriter, r *http.Request) {
 	var req AuthRequest
 	if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
 		h.logger.Error("Failed to decode authentication request", err)
-		http.Error(w, "Invalid request body", http.StatusBadRequest)
+		w.Header().Set("Content-Type", "application/json")
+		w.WriteHeader(http.StatusBadRequest)
+		json.NewEncoder(w).Encode(AuthResponse{Success: false, Message: "Invalid request body"})
 		return
 	}
 
@@ -117,14 +123,14 @@ func (h *AccountHandler) Authenticate(w http.ResponseWriter, r *http.Request) {
 
 	// Return success response
 	response := AuthResponse{
-		Success: success,
-		Message: "User Authenticated at: " + time.Now().Format("Jan 2, 2006 at 3:04PM"),
-		JWT:     token.CreateJWT(models.User{Email: req.Email}, *h.logger),
-	}
+			Success: success,
+			Message: "User Authenticated at: " + time.Now().Format("Jan 2, 2006 at 3:04PM"),
+			JWT:     token.CreateJWT(models.User{Email: req.Email}, *h.logger),
+    }
 
-	if err := h.writeJSONResponse(w, response); err == nil {
-		h.logger.Info("Successfully authenticated user with email: " + req.Email)
-	}
+    if err := h.writeJSONResponse(w, response); err == nil {
+			h.logger.Info("Successfully authenticated user with email: " + req.Email)
+    }
 }
 
 func (h *AccountHandler) AuthMiddleware(next http.Handler) http.Handler {

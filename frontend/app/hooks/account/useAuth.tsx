@@ -5,6 +5,8 @@ import { useAuth } from '../../contexts/authContext'
 export function useAuthGuard() {
   const { user } = useAuth()
   const router = useRouter()
+  console.log('Auth guard')
+  console.log('User? ', user)
 
   useFocusEffect(
     useCallback(() => {

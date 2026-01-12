@@ -1,6 +1,6 @@
 import { IUser } from '@/types/user'
 import { BaseService } from './base-service'
-import { getJwt } from '@/storage/accountStorage'
+import { getJwt, setJwt } from '@/storage/accountStorage'
 
 // Account API endpoints
 // AccountRegisterRoute     = "/api/account/register/"
@@ -20,7 +20,31 @@ export class AccountService extends BaseService {
 
   constructor() {
     super()
-    this.ACCOUNT_URL = `${this.apiURL}/account`
+    this.ACCOUNT_URL = `${this.apiURL}account`
+  }
+
+  async login(email: string, password: string) {
+    const response = await fetch(`${this.ACCOUNT_URL}/authenticate/`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ email, password }),
+    })
+
+    console.log(JSON.stringify({ email, password }))
+
+    console.log(response)
+
+    const result = await response.json()
+    if (!response.ok || !result.success) {
+      throw new Error(result.message || 'Login failed')
+    }
+
+    console.log('Login service, data:')
+    console.log(result)
+
+    if (result.jwt) {
+      await setJwt(result.jwt)
+    }
   }
 
   async registerUser({ name, email, password }: Partial<IUser>) {
@@ -35,7 +59,7 @@ export class AccountService extends BaseService {
 
   async getUserData() {
     const jwt = await getJwt()
-    const response = await fetch(this.ACCOUNT_URL, {
+    const response = await fetch(`${this.ACCOUNT_URL}/`, {
       headers: { Authorization: jwt ? `Bearer ${jwt}` : '' },
     })
     if (response.status === 401) {
