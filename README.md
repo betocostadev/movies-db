@@ -2,6 +2,9 @@
 
 This is a study project for a React Native App.
 
+<img width="1206" height="2622" alt="image" src="https://github.com/user-attachments/assets/15542d2c-30e5-4675-a674-c2fae85373c6" />
+
+
 ## Description
 
 Frontend - React Native with Expo
