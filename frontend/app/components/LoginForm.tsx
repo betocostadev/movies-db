@@ -1,9 +1,9 @@
 import { useState } from 'react'
 import ActionButton from './ActionButton'
-import { Text, useThemeColor, View } from './Themed'
-import { StyleSheet, TextInput } from 'react-native'
-import { useQueryClient } from '@tanstack/react-query'
+import { Text, useThemeColor } from './Themed'
+import { StyleSheet } from 'react-native'
 import { useLogin } from '@/hooks/account/useAccount'
+import LabeledInput from './LabeledInput'
 
 export default function LoginForm() {
   const cardBackground = useThemeColor({}, 'cardBackground')
@@ -17,40 +17,39 @@ export default function LoginForm() {
       await login({ email, password })
     } catch (e) {
       console.log(e)
-      // error handled by isError and error
     }
   }
 
   return (
     <>
       <Text style={styles.title}>Login into your account</Text>
-      <View
-        style={[{ backgroundColor: cardBackground }, styles.formInputContainer]}
-      >
-        <Text style={[{ backgroundColor: cardBackground }, styles.formLabel]}>
-          Email
-        </Text>
-        <TextInput
-          style={styles.formInput}
-          placeholder="email"
-          value={email}
-          onChangeText={setEmail}
-          autoCapitalize="none"
-          keyboardType="email-address"
-        />
-      </View>
-      <View
-        style={[{ backgroundColor: cardBackground }, styles.formInputContainer]}
-      >
-        <Text style={styles.formLabel}>Password</Text>
-        <TextInput
-          style={styles.formInput}
-          placeholder="password"
-          value={password}
-          onChangeText={setPassword}
-          secureTextEntry
-        />
-      </View>
+      <LabeledInput
+        containerStyle={[
+          styles.formInputContainer,
+          { backgroundColor: cardBackground },
+        ]}
+        labelStyle={styles.formLabel}
+        inputStyle={styles.formInput}
+        label="Email"
+        value={email}
+        onChangeText={setEmail}
+        placeholder="email"
+        autoCapitalize="none"
+        keyboardType="email-address"
+      />
+      <LabeledInput
+        containerStyle={[
+          styles.formInputContainer,
+          { backgroundColor: cardBackground },
+        ]}
+        labelStyle={styles.formLabel}
+        inputStyle={styles.formInput}
+        label="Password"
+        value={password}
+        onChangeText={setPassword}
+        placeholder="password"
+        secureTextEntry
+      />
       <ActionButton
         buttonStyles={{ paddingHorizontal: 20, marginBottom: 10 }}
         onPressHandler={onLogin}

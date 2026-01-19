@@ -27,4 +27,10 @@ export type TMovieCasting = {
   last_name: string
 }
 
-export type TMovieListKey = 'random-movies' | 'top-movies'
+export type TCollection = 'favorite' | 'watchlist'
+
+export type TMovieListKey =
+  | 'random-movies'
+  | 'top-movies'
+  | 'favorites'
+  | 'watchlist'

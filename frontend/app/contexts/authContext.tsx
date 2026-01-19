@@ -1,3 +1,6 @@
+import { useUserData } from '@/hooks/account/useAccount'
+import { accountServiceInstance } from '@/services/account-service'
+import { getJwt } from '@/storage/accountStorage'
 import { IUserInfo } from '@/types/user'
 import React, {
   createContext,
@@ -6,6 +9,7 @@ import React, {
   Dispatch,
   SetStateAction,
   ReactNode,
+  useEffect,
 } from 'react'
 
 type AuthContextType = {
@@ -17,6 +21,21 @@ const AuthContext = createContext<AuthContextType | undefined>(undefined)
 
 export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const [user, setUser] = useState<IUserInfo | null>(null)
+
+  useEffect(() => {
+    async function loadUser() {
+      const jwt = await getJwt()
+      if (jwt) {
+        try {
+          const userData = await accountServiceInstance.getUserData()
+          setUser(userData)
+        } catch (e) {
+          setUser(null)
+        }
+      }
+    }
+    loadUser()
+  }, [])
 
   return (
     <AuthContext.Provider value={{ user, setUser }}>

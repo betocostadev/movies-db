@@ -1,4 +1,4 @@
-import { IMovie } from '@/types/movies'
+import { IMovie, TCollection } from '@/types/movies'
 import { BaseService } from './base-service'
 
 export class MoviesService extends BaseService {

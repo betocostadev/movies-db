@@ -1,44 +1,64 @@
 import ActionButton from '@/components/ActionButton'
 import LoginForm from '@/components/LoginForm'
+import RegisterForm from '@/components/RegisterForm'
 import { Text, useThemeColor, View } from '@/components/Themed'
-import { useLogout, useUserData } from '@/hooks/account/useAccount'
+import { useAuth } from '@/contexts/authContext'
+import { useLogout, useUserFavoriteMovies } from '@/hooks/account/useAccount'
 import { useRouter } from 'expo-router'
-import { useEffect, useState } from 'react'
-import { StyleSheet } from 'react-native'
+import { useCallback, useEffect, useState } from 'react'
+import { StyleSheet, TouchableOpacity } from 'react-native'
+import { Link } from 'expo-router'
+import { MovieCard } from '@/components/Movies/MovieCard'
 
 export default function AccountScreen() {
-  const [mode, setMode] = useState<'register' | 'login' | 'user'>('user')
+  const [mode, setMode] = useState<'register' | 'login' | 'user'>('login')
   const cardBackground = useThemeColor({}, 'cardBackground')
   const router = useRouter()
   const { logout: handleLogout, isPending } = useLogout(() =>
     router.replace('/'),
   )
+  const { user } = useAuth()
+  const { favorites, isLoading } = useUserFavoriteMovies()
 
-  const {
-    user: userData,
-    isLoading: isLoadingUser,
-    error: userDataError,
-  } = useUserData()
+  const handleModeRegister = useCallback(() => setMode('register'), [])
+  const handleModeLogin = useCallback(() => setMode('login'), [])
 
-  console.log('User data: ', userData)
-  console.log('Loading: ', isLoadingUser)
-  console.log('Error? ', userDataError?.message)
+  const getRandomFavorite = (favorites: any[]) => {
+    if (!favorites || favorites.length === 0) return null
+    const idx = Math.floor(Math.random() * favorites.length)
+    return favorites[idx]
+  }
 
   useEffect(() => {
-    if (userDataError?.message === 'UNAUTHORIZED') {
-      console.log('User not logged in!')
+    if (!user) {
       setMode('login')
-    } else if (userData) {
+    } else {
       setMode('user')
-    } else if (userDataError) {
-      setMode('login')
     }
-  }, [userData, userDataError])
+  }, [user])
 
   if (mode === 'register') {
     return (
-      <View>
-        <Text style={styles.title}>Register a new account</Text>
+      <View style={styles.container}>
+        <View style={[{ backgroundColor: cardBackground }, styles.card]}>
+          <RegisterForm />
+          <View
+            style={[
+              { backgroundColor: cardBackground },
+              styles.registerPromptContainer,
+            ]}
+          >
+            <Text style={styles.registerPromptText}>Have an account?</Text>
+            <View
+              style={[{ backgroundColor: cardBackground }, styles.registerRow]}
+            >
+              <Text style={styles.registerPromptText}>Please </Text>
+              <TouchableOpacity onPress={handleModeLogin}>
+                <Text style={styles.registerLink}>LOGIN HERE</Text>
+              </TouchableOpacity>
+            </View>
+          </View>
+        </View>
       </View>
     )
   }
@@ -48,21 +68,66 @@ export default function AccountScreen() {
       <View style={styles.container}>
         <View style={[{ backgroundColor: cardBackground }, styles.card]}>
           <LoginForm />
-          <Text>If you don't have an account, please: REGISTER HERE</Text>
+          <View
+            style={[
+              { backgroundColor: cardBackground },
+              styles.registerPromptContainer,
+            ]}
+          >
+            <Text style={styles.registerPromptText}>
+              If you still don't have an account
+            </Text>
+            <View
+              style={[{ backgroundColor: cardBackground }, styles.registerRow]}
+            >
+              <Text style={styles.registerPromptText}>Please </Text>
+              <TouchableOpacity onPress={handleModeRegister}>
+                <Text style={styles.registerLink}>REGISTER HERE</Text>
+              </TouchableOpacity>
+            </View>
+          </View>
         </View>
       </View>
     )
   }
 
+  const randomFavorite = favorites ? getRandomFavorite(favorites) : null
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Welcome, {userData?.name || 'User'}!</Text>
       {/* Add more user info here */}
-      <ActionButton
-        buttonStyles={{ paddingHorizontal: 20, marginBottom: 10 }}
-        onPressHandler={handleLogout}
-        label={isPending ? 'Logging out...' : 'Logout'}
-      />
+      {user && (
+        <>
+          <Text style={styles.title}>Welcome, {user.name || 'User'}!</Text>
+          {!isLoading && randomFavorite && (
+            <View style={styles.taglineContainer}>
+              <Text>Today's pick for you</Text>
+              <Text style={styles.tagline}>{randomFavorite.tagline}</Text>
+              <MovieCard movie={randomFavorite} />
+            </View>
+          )}
+          {!randomFavorite && (
+            <View style={{ marginTop: 16, marginBottom: 24 }}>
+              <Text style={{ fontSize: 18, marginVertical: 14 }}>
+                No Favorites yet?
+              </Text>
+              <View style={{ flexDirection: 'row' }}>
+                <Link href={'/'}>
+                  <Text style={styles.linkText}>
+                    Check the latest top movies{' '}
+                  </Text>
+                </Link>
+                <Text style={{ fontSize: 16 }}>and add your favorites.</Text>
+              </View>
+            </View>
+          )}
+
+          <ActionButton
+            buttonStyles={{ paddingHorizontal: 20, marginBottom: 10 }}
+            onPressHandler={handleLogout}
+            label={isPending ? 'Logging out...' : 'Logout'}
+          />
+        </>
+      )}
     </View>
   )
 }
@@ -123,5 +188,42 @@ const styles = StyleSheet.create({
     color: '#060606',
     fontWeight: '600',
     fontSize: 14,
+  },
+  registerPromptContainer: {
+    marginTop: 28,
+    alignItems: 'center',
+  },
+  registerPromptText: {
+    color: '#b9b2b2',
+    fontSize: 16,
+    marginBottom: 2,
+    textAlign: 'center',
+  },
+  registerRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginTop: 4,
+  },
+  registerLink: {
+    color: '#7bd695',
+    fontWeight: 'bold',
+    fontSize: 15,
+    marginLeft: 4,
+  },
+  taglineContainer: {
+    marginVertical: 16,
+    alignItems: 'center',
+  },
+  tagline: {
+    fontSize: 18,
+    color: '#b3acac',
+    paddingLeft: 4,
+    paddingTop: 4,
+  },
+  linkText: {
+    fontSize: 16,
+    color: '#7bd695',
+    textAlign: 'center',
+    textDecorationLine: 'underline',
   },
 })

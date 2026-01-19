@@ -4,6 +4,7 @@ import {
   TextStyle,
   TouchableOpacity,
   ViewStyle,
+  View,
 } from 'react-native'
 import { Text } from './Themed'
 import { FontSizes } from '@/constants/ThemeValues'
@@ -14,6 +15,8 @@ type ActionButtonProps = {
   label: string
   onPressHandler: () => void
   textStyles?: StyleProp<TextStyle>
+  iconRight?: React.ReactNode
+  backgroundColorOverride?: string
 }
 
 export default function ActionButton({
@@ -21,24 +24,33 @@ export default function ActionButton({
   label,
   onPressHandler,
   textStyles,
+  iconRight,
+  backgroundColorOverride,
 }: ActionButtonProps) {
-  const backgroundColor = useThemeColor({}, 'btnPrimaryBackground')
+  const defaultBackgroundColor = useThemeColor({}, 'btnPrimaryBackground')
   const textColor = useThemeColor({}, 'btnPrimaryText')
 
   return (
     <TouchableOpacity
-      style={[styles.actionButton, { backgroundColor }, buttonStyles]}
+      style={[
+        styles.actionButton,
+        { backgroundColor: backgroundColorOverride || defaultBackgroundColor },
+        buttonStyles,
+      ]}
       onPress={onPressHandler}
     >
-      <Text
-        style={[
-          styles.actionText,
-          { color: textColor, fontSize: FontSizes.small },
-          textStyles,
-        ]}
-      >
-        {label}
-      </Text>
+      <View style={styles.contentRow}>
+        <Text
+          style={[
+            styles.actionText,
+            { color: textColor, fontSize: FontSizes.small },
+            textStyles,
+          ]}
+        >
+          {label}
+        </Text>
+        {iconRight && <View style={styles.iconRight}>{iconRight}</View>}
+      </View>
     </TouchableOpacity>
   )
 }
@@ -54,5 +66,12 @@ const styles = StyleSheet.create({
   },
   actionText: {
     fontWeight: '600',
+  },
+  contentRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  iconRight: {
+    marginLeft: 6,
   },
 })

@@ -5,20 +5,116 @@ import { MovieDetails } from '@/components/Movies/MovieDetails'
 import YoutubeEmbed from '@/components/Movies/YoutubeEmbed'
 import Skeleton from '@/components/Skeleton'
 import { Text, View } from '@/components/Themed'
+import { useAuth } from '@/contexts/authContext'
+import {
+  useSaveToCollection,
+  useUserWatchlistMovies,
+} from '@/hooks/account/useAccount'
 import { useMovie } from '@/hooks/movies/useMovies'
 import { useLocalSearchParams, useNavigation } from 'expo-router'
-import { useEffect } from 'react'
-import { ScrollView, StyleSheet } from 'react-native'
+import { useEffect, useMemo, useState } from 'react'
+import { ActivityIndicator, ScrollView, StyleSheet } from 'react-native'
+import { useUserFavoriteMovies } from '@/hooks/account/useAccount'
 
 export default function MovieScreen() {
   const { movieId } = useLocalSearchParams()
   const navigation = useNavigation()
+  const { user } = useAuth()
   const { movie, isLoading, error } = useMovie({
     options: {},
     id: movieId as string,
   })
 
+  const {
+    favorites,
+    isLoading: isFavoritesLoading,
+    error: favoritesError,
+    refresh: refreshFavorites,
+  } = useUserFavoriteMovies()
+
+  const {
+    watchlist,
+    isLoading: isWatchlistLoading,
+    error: watchlistError,
+    refresh: refreshWatchlist,
+  } = useUserWatchlistMovies()
+
+  const {
+    saveToCollection,
+    isPending,
+    isError,
+    error: collectionError,
+  } = useSaveToCollection()
+
+  const handleAddToFavorites = async () => {
+    const id = Number(movieId)
+
+    try {
+      await saveToCollection({ id, collection: 'favorite' })
+      refreshFavorites()
+    } catch (error) {
+      console.log(error)
+    }
+  }
+
+  const handleAddToWatchlist = async () => {
+    const id = Number(movieId)
+
+    try {
+      await saveToCollection({ id, collection: 'watchlist' })
+      refreshWatchlist()
+    } catch (error) {
+      console.log(error)
+    }
+  }
+
+  const [localError, setLocalError] = useState<string | null>(null)
+
+  useEffect(() => {
+    let errorMsg: string | null = null
+
+    if (isError && collectionError) {
+      errorMsg =
+        typeof collectionError === 'string'
+          ? collectionError
+          : collectionError.message || 'An error occurred'
+    } else if (favoritesError) {
+      errorMsg =
+        typeof favoritesError === 'string'
+          ? favoritesError
+          : favoritesError.message || 'An error occurred'
+    } else if (watchlistError) {
+      errorMsg =
+        typeof watchlistError === 'string'
+          ? watchlistError
+          : watchlistError.message || 'An error occurred'
+    }
+
+    if (errorMsg) {
+      setLocalError(errorMsg)
+      const timer = setTimeout(() => setLocalError(null), 4000)
+      return () => clearTimeout(timer)
+    }
+  }, [isError, collectionError, favoritesError, watchlistError])
+
   const movieTitle = movie?.title || 'Movie'
+
+  const isFavorite = useMemo(() => {
+    if (Array.isArray(favorites) && favorites?.length) {
+      return favorites.some((m) => m.id === Number(movieId))
+    }
+    return false
+  }, [favorites, movieId])
+
+  const inWatchlist = useMemo(() => {
+    if (Array.isArray(watchlist) && watchlist.length) {
+      return watchlist.some((m) => m.id === Number(movieId))
+    }
+    return false
+  }, [watchlist, movieId])
+
+  const showActivityIndicator =
+    isPending || (!!user && (isFavoritesLoading || isWatchlistLoading))
 
   useEffect(() => {
     navigation.setOptions({
@@ -60,9 +156,21 @@ export default function MovieScreen() {
         poster_url={movie.poster_url}
         release_year={movie.release_year}
         score={movie.score}
-        onAddToFavorites={() => {}}
-        onAddToWatchList={() => {}}
+        onAddToFavorites={handleAddToFavorites}
+        onAddToWatchList={handleAddToWatchlist}
+        isFavorite={isFavorite}
+        inWatchlist={inWatchlist}
       />
+      {showActivityIndicator && (
+        <View style={{ alignItems: 'center', marginVertical: 8 }}>
+          <ActivityIndicator size="small" color="#b9b2b2" />
+        </View>
+      )}
+      {localError && (
+        <View style={{ alignItems: 'center', marginVertical: 8 }}>
+          <Text style={{ color: 'red', fontWeight: '600' }}>{localError}</Text>
+        </View>
+      )}
       <Text style={styles.overview}>{movie.overview}</Text>
       {movie.genres?.length && (
         <View

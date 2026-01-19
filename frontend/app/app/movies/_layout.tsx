@@ -1,5 +1,4 @@
 import HomeButton from '@/components/HomeButton'
-import { Text } from '@/components/Themed'
 import { Stack } from 'expo-router'
 
 export default function MoviesStackLayout() {

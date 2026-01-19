@@ -1,6 +1,7 @@
 import { StyleSheet, Dimensions, Image } from 'react-native'
 import { Text, useThemeColor, View } from '../Themed'
 import ActionButton from '../ActionButton'
+import { MaterialIcons } from '@expo/vector-icons'
 
 const { width } = Dimensions.get('window')
 const CARD_WIDTH = width * 0.9
@@ -14,6 +15,8 @@ export const MovieDetails = ({
   score,
   onAddToFavorites,
   onAddToWatchList,
+  isFavorite = false,
+  inWatchlist = false,
 }: {
   language: string
   popularity: number
@@ -22,6 +25,8 @@ export const MovieDetails = ({
   score: number | undefined
   onAddToFavorites: () => void
   onAddToWatchList: () => void
+  isFavorite: boolean
+  inWatchlist: boolean
 }) => {
   const poster = { uri: poster_url }
   const cardBackground = useThemeColor({}, 'cardBackground')
@@ -52,12 +57,24 @@ export const MovieDetails = ({
         </View>
         <View style={[styles.actionsRow, { backgroundColor: cardBackground }]}>
           <ActionButton
-            label="Add to Favorites"
+            label={isFavorite ? 'Favorited' : 'Add to Favorites'}
             onPressHandler={onAddToFavorites}
+            backgroundColorOverride={isFavorite ? '#2563eb' : undefined}
+            iconRight={
+              isFavorite ? (
+                <MaterialIcons name="check" size={16} color={'#e9e9e9'} />
+              ) : undefined
+            }
           />
           <ActionButton
-            label="Add to Watchlist"
+            label={inWatchlist ? 'In Watchlist' : 'Add to Watchlist'}
             onPressHandler={onAddToWatchList}
+            backgroundColorOverride={inWatchlist ? '#2563eb' : undefined}
+            iconRight={
+              inWatchlist ? (
+                <MaterialIcons name="check" size={16} color={'#e9e9e9'} />
+              ) : undefined
+            }
           />
         </View>
       </View>
