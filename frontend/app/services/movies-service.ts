@@ -1,12 +1,15 @@
-import { IMovie, TCollection } from '@/types/movies'
+import { IMovie } from '@/types/movies'
 import { BaseService } from './base-service'
+import { TGenres } from '@/types/genres'
 
 export class MoviesService extends BaseService {
   private MOVIES_URL: string
+  private GENRES_URL: string
 
   constructor() {
     super()
     this.MOVIES_URL = `${this.apiURL}/movies/`
+    this.GENRES_URL = `${this.apiURL}/genres/`
   }
 
   async getRandomMovies(): Promise<IMovie[]> {
@@ -32,6 +35,33 @@ export class MoviesService extends BaseService {
     const response = await fetch(url)
     if (!response.ok) {
       throw new Error(`Failed to fetch movie - ID ${id} not found.`)
+    }
+    return response.json()
+  }
+
+  async searchMovies(
+    query: string,
+    order?: string,
+    genre?: number,
+  ): Promise<IMovie[]> {
+    const params = new URLSearchParams()
+    params.append('query', query)
+    if (order) params.append('order', order)
+    if (genre) params.append('genre', genre?.toString())
+    // /api/movies/search?query=${query}&order=${order}&genre=${genre}
+    const url = `${this.MOVIES_URL}search?${params.toString()}`
+    const response = await fetch(url)
+    if (!response.ok) {
+      throw new Error(`Failed to search movies`)
+    }
+    return response.json()
+  }
+
+  async getGenres(): Promise<TGenres> {
+    const url = `${this.GENRES_URL}`
+    const response = await fetch(url)
+    if (!response.ok) {
+      throw new Error(`Failed to fetch genres`)
     }
     return response.json()
   }

@@ -1,4 +1,3 @@
-import { useUserData } from '@/hooks/account/useAccount'
 import { accountServiceInstance } from '@/services/account-service'
 import { getJwt } from '@/storage/accountStorage'
 import { IUserInfo } from '@/types/user'

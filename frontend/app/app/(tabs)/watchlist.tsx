@@ -1,9 +1,9 @@
-import { MoviesList } from '@/components/Movies/MoviesList'
-import { Text, View } from '@/components/Themed'
-import { useUserWatchlistMovies } from '@/hooks/account/useAccount'
-import { useAuthGuard } from '@/hooks/account/useAuth'
 import { router } from 'expo-router'
+import { Text, View } from '@/components/Themed'
 import { Pressable, ScrollView, StyleSheet } from 'react-native'
+import { MoviesList } from '@/components/Movies/MoviesList'
+import { useAuthGuard } from '@/hooks/account/useAuth'
+import { useUserWatchlistMovies } from '@/hooks/account/useAccount'
 
 export default function WatchlistScreen() {
   useAuthGuard()

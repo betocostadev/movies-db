@@ -34,3 +34,4 @@ export type TMovieListKey =
   | 'top-movies'
   | 'favorites'
   | 'watchlist'
+  | 'search-results'

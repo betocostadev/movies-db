@@ -1,9 +1,9 @@
-import { Pressable, ScrollView, StyleSheet } from 'react-native'
+import { router } from 'expo-router'
 import { Text, View } from '@/components/Themed'
+import { Pressable, ScrollView, StyleSheet } from 'react-native'
+import { MoviesList } from '@/components/Movies/MoviesList'
 import { useAuthGuard } from '@/hooks/account/useAuth'
 import { useUserFavoriteMovies } from '@/hooks/account/useAccount'
-import { router } from 'expo-router'
-import { MoviesList } from '@/components/Movies/MoviesList'
 
 export default function FavoritesScreen() {
   useAuthGuard()
