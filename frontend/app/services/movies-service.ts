@@ -9,7 +9,7 @@ export class MoviesService extends BaseService {
   constructor() {
     super()
     this.MOVIES_URL = `${this.apiURL}/movies/`
-    this.GENRES_URL = `${this.apiURL}/genres/`
+    this.GENRES_URL = `${this.apiURL}/genres`
   }
 
   async getRandomMovies(): Promise<IMovie[]> {
@@ -59,6 +59,7 @@ export class MoviesService extends BaseService {
 
   async getGenres(): Promise<TGenres> {
     const url = `${this.GENRES_URL}`
+    console.log('Will call for genres url: ', url)
     const response = await fetch(url)
     if (!response.ok) {
       throw new Error(`Failed to fetch genres`)

@@ -2,12 +2,16 @@ import { useMemo, useCallback } from 'react'
 import { useQuery } from '@tanstack/react-query'
 import { moviesQueryKeys } from './useMoviesQueryKeys'
 import {
+  getGenresQueryFn,
   getMovieQueryFn,
   getRandomMoviesQueryFn,
   getTopMoviesQueryFn,
+  searchMoviesQueryFn,
 } from './useMoviesQueries'
 import { IMovie } from '@/types/movies'
 import { useMoviesService } from './useMovieService'
+import { TGenres } from '@/types/genres'
+import { TIME_24H_MS } from '@/constants/General'
 
 export interface UseMoviesOptions {
   /**
@@ -34,6 +38,10 @@ export interface UseMoviesResult extends BaseResult {
 
 export interface UseMovieResult extends BaseResult {
   movie: IMovie | undefined
+}
+
+interface UseGenresResult extends BaseResult {
+  genres: TGenres | undefined
 }
 
 export const useRandomMovies = (
@@ -98,7 +106,7 @@ export const useTopMovies = (
   })
 
   const refresh = useCallback(async () => {
-    refetch()
+    await refetch()
   }, [refetch])
 
   const movieError = useMemo<Error | undefined>(() => {
@@ -145,7 +153,7 @@ export const useMovie = ({
   })
 
   const refresh = useCallback(async () => {
-    refetch()
+    await refetch()
   }, [refetch])
 
   const movieError = useMemo<Error | undefined>(() => {
@@ -157,6 +165,99 @@ export const useMovie = ({
     movie: data,
     isLoading,
     error: movieError,
+    refresh,
+  }
+}
+
+export const useSearchMovies = ({
+  options = {},
+  query,
+  order,
+  genre,
+}: {
+  options: UseMoviesOptions
+  query: string
+  order: string
+  genre: number
+}) => {
+  const { autoload, refetchInterval } = options
+  const moviesService = useMemo(() => useMoviesService(), [])
+
+  if (!query) {
+    throw new Error('Search query must be provided')
+  }
+
+  const queryKey = useMemo(
+    () => moviesQueryKeys.searchMovies(query, order, genre),
+    [query, order, genre],
+  )
+
+  const { data, isLoading, error, refetch } = useQuery({
+    queryKey: queryKey,
+    queryFn: () => {
+      if (!moviesService) {
+        throw new Error('Movies service not available')
+      }
+      return searchMoviesQueryFn({ moviesService, query, order, genre })
+    },
+    enabled: autoload && !!moviesService && !!query,
+    refetchInterval: refetchInterval,
+    refetchOnReconnect: true,
+    placeholderData: (previousData) => previousData,
+  })
+
+  const refresh = useCallback(async () => {
+    await refetch()
+  }, [refetch])
+
+  const searchError = useMemo<Error | undefined>(() => {
+    if (!error) return undefined
+    return new Error(`Failed to search movies for: Search=${query}`)
+  }, [error])
+
+  return {
+    movies: data,
+    isLoading,
+    error: searchError,
+    refresh,
+  }
+}
+
+export const useGenres = (options: UseMoviesOptions = {}): UseGenresResult => {
+  const { autoload, refetchInterval } = options
+  const moviesService = useMemo(() => useMoviesService(), [])
+
+  const queryKey = useMemo(() => moviesQueryKeys.genres(), [])
+
+  const { data, isLoading, error, refetch } = useQuery({
+    queryKey: queryKey,
+    queryFn: () => {
+      if (!moviesService) {
+        throw new Error('Movies service not available')
+      }
+      return getGenresQueryFn({ moviesService })
+    },
+    enabled: autoload && !!moviesService,
+    refetchInterval: refetchInterval,
+    refetchOnReconnect: true,
+    placeholderData: (previousData) => previousData,
+    staleTime: TIME_24H_MS, // 24 hours - genres don't change often
+    gcTime: TIME_24H_MS, // Keep in cache for 24 hours
+  })
+
+  const refresh = useCallback(async () => {
+    await refetch()
+  }, [refetch])
+
+  const genreError = useMemo<Error | undefined>(() => {
+    if (!error) return undefined
+    return new Error(`Use Genres failed`)
+  }, [error])
+
+  return {
+    genres: data,
+    isLoading,
+    error: genreError,
     refresh,
   }
 }

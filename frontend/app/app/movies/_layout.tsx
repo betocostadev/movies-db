@@ -10,6 +10,9 @@ export default function MoviesStackLayout() {
         headerTintColor: '#fff',
         headerLeft: () => <HomeButton pathTo="/" label="Home" />,
       }}
-    />
+    >
+      <Stack.Screen name="[movieId]" options={{ title: 'Movie Details' }} />
+      <Stack.Screen name="search" options={{ title: 'Search Results' }} />
+    </Stack>
   )
 }

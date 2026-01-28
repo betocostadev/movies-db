@@ -35,3 +35,39 @@ export const getMovieQueryFn = async ({
 
   return movie
 }
+
+export const searchMoviesQueryFn = async ({
+  moviesService,
+  query,
+  order,
+  genre,
+}: {
+  moviesService: MoviesService
+  query: string
+  order: string
+  genre: number
+}) => {
+  const movies = await moviesService.searchMovies(query, order, genre)
+
+  if (!movies) {
+    // TODO: Remove console after debugging
+    console.log('Search movies query returned no results')
+    return []
+  }
+
+  return movies
+}
+
+export const getGenresQueryFn = async ({
+  moviesService,
+}: {
+  moviesService: MoviesService
+}) => {
+  const genres = await moviesService.getGenres()
+
+  if (!genres) {
+    throw new Error('Unable to query for movie genres')
+  }
+
+  return genres
+}

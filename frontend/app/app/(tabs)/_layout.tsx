@@ -5,7 +5,6 @@ import { Pressable } from 'react-native'
 
 import { Colors } from '@/constants/ThemeValues'
 import { useColorScheme } from '@/hooks/useColorScheme'
-import { useClientOnlyValue } from '@/hooks/useClientOnlyValue'
 import MaterialIcons from '@expo/vector-icons/MaterialIcons'
 
 // You can explore the built-in icon families and icons on the web at https://icons.expo.fyi/
@@ -20,66 +19,75 @@ export default function TabLayout() {
   const colorScheme = useColorScheme()
 
   return (
-    <Tabs
-      screenOptions={{
-        tabBarActiveTintColor: Colors[colorScheme ?? 'light'].tint,
-        tabBarLabelStyle: {
-          fontSize: 14,
-          fontWeight: '600',
-        },
-        // Disable the static render of the header on web
-        // to prevent a hydration error in React Navigation v6.
-        headerShown: useClientOnlyValue(false, true),
-      }}
-    >
-      <Tabs.Screen
-        name="index"
-        options={{
-          title: 'Movies',
-          tabBarIcon: ({ size, color }) => (
-            <MaterialIcons name="movie" size={size} color={color} />
-          ),
-          headerRight: () => (
-            <Link href="/modal" asChild>
-              <Pressable>
-                {({ pressed }) => (
-                  <FontAwesome
-                    name="info-circle"
-                    size={25}
-                    color={Colors[colorScheme ?? 'light'].body}
-                    style={{ marginRight: 15, opacity: pressed ? 0.5 : 1 }}
-                  />
-                )}
-              </Pressable>
-            </Link>
-          ),
+    <>
+      <Tabs
+        screenOptions={{
+          tabBarActiveTintColor: Colors[colorScheme ?? 'light'].tint,
+          tabBarLabelStyle: {
+            fontSize: 14,
+            fontWeight: '600',
+          },
+          // Disable the static render of the header on web
+          // to prevent a hydration error in React Navigation v6.
+          headerShown: false,
+          headerShadowVisible: false,
+          headerStatusBarHeight: 0,
+          headerTitleStyle: {
+            fontSize: 16,
+            fontWeight: '600',
+          },
+          headerTitleAlign: 'center',
         }}
-      />
-      <Tabs.Screen
-        name="favorites"
-        options={{
-          title: 'Favorites',
-          tabBarIcon: ({ size, color }) => (
-            <MaterialIcons name="stars" size={size} color={color} />
-          ),
-        }}
-      />
-      <Tabs.Screen
-        name="watchlist"
-        options={{
-          title: 'Watchlist',
-          tabBarIcon: ({ size, color }) => (
-            <MaterialIcons name="list" size={size} color={color} />
-          ),
-        }}
-      />
-      <Tabs.Screen
-        name="account"
-        options={{
-          title: 'Account',
-          tabBarIcon: ({ color }) => <TabBarIcon name="user" color={color} />,
-        }}
-      />
-    </Tabs>
+      >
+        <Tabs.Screen
+          name="index"
+          options={{
+            title: 'Movies',
+            tabBarIcon: ({ size, color }) => (
+              <MaterialIcons name="movie" size={size} color={color} />
+            ),
+            headerRight: () => (
+              <Link href="/modal" asChild>
+                <Pressable>
+                  {({ pressed }) => (
+                    <FontAwesome
+                      name="info-circle"
+                      size={25}
+                      color={Colors[colorScheme ?? 'light'].body}
+                      style={{ marginRight: 15, opacity: pressed ? 0.5 : 1 }}
+                    />
+                  )}
+                </Pressable>
+              </Link>
+            ),
+          }}
+        />
+        <Tabs.Screen
+          name="favorites"
+          options={{
+            title: 'Favorites',
+            tabBarIcon: ({ size, color }) => (
+              <MaterialIcons name="stars" size={size} color={color} />
+            ),
+          }}
+        />
+        <Tabs.Screen
+          name="watchlist"
+          options={{
+            title: 'Watchlist',
+            tabBarIcon: ({ size, color }) => (
+              <MaterialIcons name="list" size={size} color={color} />
+            ),
+          }}
+        />
+        <Tabs.Screen
+          name="account"
+          options={{
+            title: 'Account',
+            tabBarIcon: ({ color }) => <TabBarIcon name="user" color={color} />,
+          }}
+        />
+      </Tabs>
+    </>
   )
 }
