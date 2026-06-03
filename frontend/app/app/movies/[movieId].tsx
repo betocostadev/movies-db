@@ -90,7 +90,7 @@ export default function MovieScreen() {
           : watchlistError.message || 'An error occurred'
     }
 
-    if (errorMsg) {
+    if (errorMsg && errorMsg !== 'No user available') {
       setLocalError(errorMsg)
       const timer = setTimeout(() => setLocalError(null), 4000)
       return () => clearTimeout(timer)

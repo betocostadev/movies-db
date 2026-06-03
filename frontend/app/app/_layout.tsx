@@ -54,7 +54,9 @@ export default function RootLayout() {
 
   useEffect(() => {
     if (loaded) {
-      SplashScreen.hideAsync()
+      SplashScreen.hideAsync().catch(() => {
+        // Suppress splash screen errors
+      })
     }
   }, [loaded])
 
@@ -97,9 +99,6 @@ function RootLayoutNav() {
 
   useEffect(() => {
     if (searchInput.trim()) {
-      console.log('=== AUTO SEARCH (debounced) ===')
-      console.log('searchInput:', searchInput)
-
       const searchParams = {
         query: searchInput,
         order: selectedOrder,
@@ -115,7 +114,7 @@ function RootLayoutNav() {
         })
       }
     }
-  }, [searchInput, selectedOrder, selectedGenre, router, pathname])
+  }, [searchInput, selectedOrder, selectedGenre, router])
 
   return (
     <AuthProvider>

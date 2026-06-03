@@ -1,20 +1,22 @@
 import { StyleSheet } from 'react-native'
-import { Text, View } from '@/components/Themed'
-import { useLocalSearchParams } from 'expo-router'
-import { useSearchMovies, useGenres } from '@/hooks/movies/useMovies'
-import { useEffect } from 'react'
+import { View } from '@/components/Themed'
+import { useLocalSearchParams, useRouter } from 'expo-router'
+import { useSearchMovies } from '@/hooks/movies/useMovies'
 import { MoviesList } from '@/components/Movies/MoviesList'
+import GenreSelector from '@/components/GenreSelector'
+import PopularitySelector from '@/components/PopularitySelector'
 
 export default function MovieSearchScreen() {
+  const router = useRouter()
   const { query, order, genre } = useLocalSearchParams()
-  const { genres, isLoading: isLoadingGenres, error: genresError } = useGenres()
 
-  useEffect(() => {
-    console.log('=== SEARCH SCREEN PARAMS ===')
-    console.log('query:', query)
-    console.log('order:', order)
-    console.log('genre:', genre)
-  }, [query, order, genre])
+  const handleGenreChange = (genreId: number | null) => {
+    router.setParams({ genre: genreId ? String(genreId) : '' })
+  }
+
+  const handleSortChange = (sort: string) => {
+    router.setParams({ order: sort })
+  }
 
   const {
     movies: searchResults,
@@ -27,21 +29,18 @@ export default function MovieSearchScreen() {
     genre: genre ? parseInt(String(genre)) : 0,
   })
 
-  useEffect(() => {
-    console.log('=== SEARCH RESULTS ===')
-    console.log('isLoading:', isLoadingSearch)
-    console.log('error:', searchError)
-    console.log('results count:', searchResults?.length || 0)
-    console.log('results:', searchResults)
-  }, [searchResults, isLoadingSearch, searchError])
-
-  console.log('Is loading genres? ', isLoadingGenres)
-  console.log('Genres error? ', genresError)
-  console.log('Genres:')
-  console.log(genres)
-
   return (
     <View style={styles.container}>
+      <View style={styles.filtersContainer}>
+        <GenreSelector
+          selectedGenre={genre ? parseInt(String(genre)) : null}
+          onGenreChange={handleGenreChange}
+        />
+        <PopularitySelector
+          selectedSort={String(order || 'popularity')}
+          onSortChange={handleSortChange}
+        />
+      </View>
       <MoviesList
         movieListKey={'search-results'}
         movies={searchResults}
@@ -56,8 +55,13 @@ export default function MovieSearchScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    alignItems: 'center',
-    justifyContent: 'center',
-    paddingVertical: 24,
+  },
+  filtersContainer: {
+    flexDirection: 'row',
+    width: '100%',
+    paddingHorizontal: 16,
+    paddingTop: 16,
+    paddingBottom: 8,
+    gap: 12,
   },
 })

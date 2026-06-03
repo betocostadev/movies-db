@@ -1,20 +1,14 @@
-import { RelativePathString, useRouter } from 'expo-router'
+import { useRouter } from 'expo-router'
 import { Pressable } from 'react-native'
 import { Text } from '@/components/Themed'
 import { MaterialIcons } from '@expo/vector-icons'
 import { Paddings } from '@/constants/ThemeValues'
 
-export default function HomeButton({
-  pathTo,
-  label,
-}: {
-  pathTo: string
-  label: string
-}) {
+export default function HomeButton({ label }: { label?: string }) {
   const router = useRouter()
   return (
     <Pressable
-      onPress={() => router.replace(pathTo as RelativePathString)}
+      onPress={() => router.back()}
       style={{
         flexDirection: 'row',
         alignItems: 'center',
@@ -22,11 +16,18 @@ export default function HomeButton({
       }}
     >
       <MaterialIcons name="arrow-back-ios" size={22} color="#fff" />
-      <Text
-        style={{ color: '#fff', fontSize: 16, marginLeft: 2, paddingRight: 10 }}
-      >
-        {label}
-      </Text>
+      {label && (
+        <Text
+          style={{
+            color: '#fff',
+            fontSize: 16,
+            marginLeft: 2,
+            paddingRight: 10,
+          }}
+        >
+          {label}
+        </Text>
+      )}
     </Pressable>
   )
 }

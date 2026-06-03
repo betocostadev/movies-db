@@ -5,10 +5,10 @@ export default function MoviesStackLayout() {
   return (
     <Stack
       screenOptions={{
-        headerBackTitle: 'Home',
+        headerBackTitle: 'Back',
         headerStyle: { backgroundColor: '#23272f' },
         headerTintColor: '#fff',
-        headerLeft: () => <HomeButton pathTo="/" label="Home" />,
+        headerLeft: () => <HomeButton label="Back" />,
       }}
     >
       <Stack.Screen name="[movieId]" options={{ title: 'Movie Details' }} />

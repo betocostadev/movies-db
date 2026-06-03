@@ -3,6 +3,4 @@ export type TGenre = {
   name: string
 }
 
-export type TGenres = {
-  genres: TGenre[]
-}
+export type TGenres = TGenre[]
